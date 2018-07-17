@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登陆</title>
+</head>
+<body>
+<div style="margin: 0 auto">
+    <h2>标准登陆页面</h2>
+    <form action="/authentication/form" method="post">
+        <table>
+            <tr>
+                <td>用户名：</td>
+                <td><input type="text" name="username"></td>
+            </tr>
+            <tr>
+                <td>密码：</td>
+                <td><input type="password" name="password"></td>
+            </tr>
+            <tr>
+                <td>图形验证码：</td>
+                <td><input type="text" name="imageCode">
+                    <img src="/code/image?length=6"></td>
+            </tr>
+            <!--name必须为"remember-me"-->
+            <tr>
+                <td colspan="2"><input type="checkbox" name="remember-me" value="true"/>记住我</td>
+            </tr>
+            <tr>
+                <button type="submit">登陆</button>
+                </td>
+                <td colspan="2">
+                    <button type="submit">登陆</button>
+                </td>
+                <div>
+                    ${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
+                </div>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

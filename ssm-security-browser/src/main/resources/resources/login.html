@@ -30,8 +30,29 @@
                 <td colspan="2"><input type="checkbox" name="remember-me" value="true"/>记住我</td>
             </tr>
             <tr>
-                <button type="submit">登陆</button>
+                <td colspan="2">
+                    <button type="submit">登陆</button>
                 </td>
+                <div>
+                    ${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
+                </div>
+            </tr>
+        </table>
+    </form>
+    <h2>标准登陆页面</h2>
+    <form action="/authentication/mobile" method="post">
+        <table>
+            <tr>
+                <td>手机号：</td>
+                <td><input type="text" name="mobile" value="15512345678"></td>
+            </tr>
+            <tr>
+                <td>短信验证码：</td>
+                <td><input type="text" name="smsCode">
+                    <a href="/code/sms?mobile=15512345678">发送验证码</a>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2">
                     <button type="submit">登陆</button>
                 </td>

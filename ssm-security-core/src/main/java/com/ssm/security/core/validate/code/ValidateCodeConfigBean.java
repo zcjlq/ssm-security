@@ -1,6 +1,8 @@
 package com.ssm.security.core.validate.code;
 
 import com.ssm.security.core.properties.SecurityProperties;
+import com.ssm.security.core.validate.code.sms.DefaultSmsCodeSenderImpl;
+import com.ssm.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -29,5 +31,17 @@ public class ValidateCodeConfigBean {
         ImageCodeGenerator imageCodeGenerator = new ImageCodeGenerator();
         imageCodeGenerator.setSecurityProperties(securityProperties);
         return imageCodeGenerator;
+    }
+
+    /**
+     * 注解ConditionalOnMissingBean可以通过name指定，也可以根据class
+     * 当spring找不到接口SmsCodeSender的实现时才用下面的实现
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(SmsCodeSender.class)
+    public SmsCodeSender smsCodeGenerator() {
+        return new DefaultSmsCodeSenderImpl();
     }
 }

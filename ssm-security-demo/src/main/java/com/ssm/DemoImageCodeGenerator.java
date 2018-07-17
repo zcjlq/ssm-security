@@ -14,7 +14,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 public class DemoImageCodeGenerator implements ValidateCodeGenerator {
 
     @Override
-    public ImageCode createImageCode(ServletWebRequest request) {
+    public ImageCode generateCode(ServletWebRequest request) {
         System.out.println("测试具体应用中实现某个接口，从而实现验证码可配置");
         return null;
     }

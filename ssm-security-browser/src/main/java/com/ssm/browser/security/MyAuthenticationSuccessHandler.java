@@ -22,7 +22,7 @@ import java.io.IOException;
  * @author 贾令强
  * @since 2018/6/24 21:11
  */
-// 由AuthenticationSuccessHandler 改为继承 SavedRequestAwareAuthenticationSuccessHandler spring 默认的成功处理器
+// 由 AuthenticationSuccessHandler 改为继承 SavedRequestAwareAuthenticationSuccessHandler spring 默认的成功处理器
 @Component
 public class MyAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
@@ -55,6 +55,5 @@ public class MyAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
         }
-
     }
 }

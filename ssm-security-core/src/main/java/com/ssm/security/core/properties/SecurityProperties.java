@@ -13,7 +13,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SecurityProperties {
 
+    /**
+     * 浏览器相关配置，比如loginType 登录页面
+     */
     private BrowserProperties browser = new BrowserProperties();
+
+    /**
+     * 验证码相关配置
+     */
     private ValidateCodeProperties code = new ValidateCodeProperties();
 
     public BrowserProperties getBrowser() {

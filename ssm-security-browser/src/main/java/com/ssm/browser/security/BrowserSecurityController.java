@@ -20,11 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * TODO
  * @author 贾令强
  * @since 2018/6/23 22:36
  */
 @RestController
 public class BrowserSecurityController {
+
     private static final Logger log = LoggerFactory.getLogger(BrowserSecurityController.class);
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();

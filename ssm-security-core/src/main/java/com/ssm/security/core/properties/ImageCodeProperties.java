@@ -6,7 +6,10 @@ package com.ssm.security.core.properties;
  */
 public class ImageCodeProperties extends SmsCodeProperties {
 
+    // 验证码图片宽度
     private int width = 67;
+
+    // 验证码图片高度
     private int height = 23;
 
     // 需要生成验证码的请求

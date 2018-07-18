@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import javax.sql.DataSource;
 
 /**
+ * spring security 配置
+ *
  * @author 贾令强
  * @since 2018/6/19 21:08
  */
@@ -25,23 +27,41 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityProperties securityProperties;
-
+    /**
+     * 登录成功后处理逻辑
+     */
     @Autowired
     private MyAuthenticationSuccessHandler authenticationSuccessHandler;
-
+    /**
+     * 登录失败后处理逻辑
+     */
     @Autowired
     private MyAuthenticationFailureHandler authenticationFailureHandler;
 
-
+    /**
+     * 使用spring提供的密码加密模式，相同密码每次加密后也不相同
+     * 加密后长度为60
+     * example：$2a$10$t2gRXJodCtopupnPg64Ymu8qcnC2ICneLdb6dnQVSUsalcN6bphfO
+     *
+     * @return 密码加密
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 实现记住我功能，需要将cookie信息写入数据库,这里的dataSource是用的demo项目中的application.yml定义的
+    /**
+     * 实现记住我功能，需要将cookie信息写入数据库,这里的dataSource是用的demo项目中的application.yml定义的
+     */
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * 用于实现remember-me功能
+     * 自动创建表persistent_logins
+     *
+     * @return
+     */
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
         JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
@@ -50,6 +70,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         return jdbcTokenRepository;
     }
 
+    /**
+     * 自定义用户信息获取业务类
+     */
     @Autowired
     private UserDetailsService userDetailsService;
 

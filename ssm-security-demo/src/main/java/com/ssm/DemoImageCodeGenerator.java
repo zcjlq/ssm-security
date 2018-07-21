@@ -1,7 +1,7 @@
 package com.ssm;
 
-import com.ssm.security.core.validate.code.ImageCode;
 import com.ssm.security.core.validate.code.ValidateCodeGenerator;
+import com.ssm.security.core.validate.code.image.ImageCode;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**

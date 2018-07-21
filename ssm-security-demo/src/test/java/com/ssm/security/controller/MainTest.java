@@ -1,6 +1,7 @@
 package com.ssm.security.controller;
 
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -17,5 +18,10 @@ public class MainTest {
         System.out.println(encode.length());
         System.out.println(encode1);
         System.out.println(encode1.length());
+    }
+
+    @Test
+    public void testPost() {
+        System.out.println(HttpMethod.POST);
     }
 }

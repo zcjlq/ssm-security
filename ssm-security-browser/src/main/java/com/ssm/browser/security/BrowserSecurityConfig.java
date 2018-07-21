@@ -1,6 +1,8 @@
 package com.ssm.browser.security;
 
+import com.ssm.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.ssm.security.core.properties.SecurityProperties;
+import com.ssm.security.core.validate.code.SmsCodeFilter;
 import com.ssm.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -76,6 +78,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 配置需要输入验证码的请求
@@ -84,7 +89,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setSecurityProperties(securityProperties);
         validateCodeFilter.afterPropertiesSet();
 
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+        // 配置需要输入验证码的请求
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setFailureHandler(authenticationFailureHandler);
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        smsCodeFilter.afterPropertiesSet();
+
+        http.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
                 .loginPage("/authentication/require")
                 // form表单提交地址
@@ -103,10 +115,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/authentication/require",
                         securityProperties.getBrowser().getLoginPage(),
-                        "/code/image")
+                        "/code/*")
                 .permitAll()
                 .anyRequest()
                 .authenticated()// 需要身份认证
-                .and().csrf().disable();
+                .and().csrf().disable()
+                .apply(smsCodeAuthenticationSecurityConfig);
     }
 }

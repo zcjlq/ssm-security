@@ -1,7 +1,6 @@
 package com.ssm.security.core.validate.code;
 
 import com.ssm.security.core.properties.SecurityProperties;
-import com.ssm.security.core.validate.code.image.ImageCode;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -24,12 +23,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 使用spring提供的过滤器，只执行一次
- *
  * @author 贾令强
- * @since 2018/7/7 16:04
+ * @since 2018/7/21 09:14
  */
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean {
 
     private AuthenticationFailureHandler failureHandler;
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
@@ -49,7 +46,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
             urlSet.addAll(Arrays.asList(configUrls));
         }
         // 不管配置文件是否配置url，登陆请求都要进行验证码认证
-        urlSet.add("/authentication/form");
+        urlSet.add("/authentication/mobile");
     }
 
     @Override
@@ -67,7 +64,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 //            if (StringUtils.equals("", request.getServletPath())
 //                    && StringUtils.endsWithIgnoreCase(request.getMethod(), "post")) {
             try {
-                validate(new ServletWebRequest(request));
+                this.validate(new ServletWebRequest(request));
             } catch (ValidateCodeException e) {
                 failureHandler.onAuthenticationFailure(request, response, e);
                 return;
@@ -78,9 +75,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request,
-                ValidateCodeController.SESSION_KEY);
-        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
+        ValidateCode codeInSession = (ValidateCode) sessionStrategy.getAttribute(request,
+                ValidateCodeProcessor.SESSION_KEY_PREFIX + "SMS");
+        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
 
         if (StringUtils.isBlank(codeInRequest)) {
             throw new ValidateCodeException("验证码的值为空");

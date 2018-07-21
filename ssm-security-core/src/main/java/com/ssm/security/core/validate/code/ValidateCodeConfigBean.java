@@ -1,11 +1,10 @@
 package com.ssm.security.core.validate.code;
 
 import com.ssm.security.core.properties.SecurityProperties;
+import com.ssm.security.core.validate.code.image.ImageCodeGenerator;
 import com.ssm.security.core.validate.code.sms.DefaultSmsCodeSenderImpl;
 import com.ssm.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -25,8 +24,9 @@ public class ValidateCodeConfigBean {
      *
      * @return
      */
-    @Bean
-    @ConditionalOnMissingBean(name = "imageCodeGenerator")
+//    @Bean
+//    @ConditionalOnMissingBean(name = "imageCodeGenerator")
+    // 重构前使用此注解
     public ValidateCodeGenerator imageCodeGenerator() {
         ImageCodeGenerator imageCodeGenerator = new ImageCodeGenerator();
         imageCodeGenerator.setSecurityProperties(securityProperties);
@@ -39,8 +39,9 @@ public class ValidateCodeConfigBean {
      *
      * @return
      */
-    @Bean
-    @ConditionalOnMissingBean(SmsCodeSender.class)
+//    @Bean
+//    @ConditionalOnMissingBean(SmsCodeSender.class)
+    // 注意，重构前使用此注解
     public SmsCodeSender smsCodeGenerator() {
         return new DefaultSmsCodeSenderImpl();
     }

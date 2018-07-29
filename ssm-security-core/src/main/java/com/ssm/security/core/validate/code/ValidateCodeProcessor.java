@@ -22,4 +22,6 @@ public interface ValidateCodeProcessor {
      * @throws Exception
      */
     void create(ServletWebRequest request) throws Exception;
+
+    void validate(ServletWebRequest request);
 }

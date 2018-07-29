@@ -6,12 +6,30 @@ package com.ssm.security.core.properties;
  */
 public class BrowserProperties {
 
-    // 设置默认值
+    /**
+     * 默认登陆页面
+     */
     private String loginPage = "/login.html";
 
+    /**
+     * 登陆类型
+     */
     private LoginType loginType = LoginType.JSON;
 
-    private int rememberMeSecond = 3600;// 记住我一个小时
+    /**
+     * 记住我一个小时
+     */
+    private int rememberMeSecond = 3600;
+
+    private String signUpUrl = "/signup.html";
+
+    public String getSignUpUrl() {
+        return signUpUrl;
+    }
+
+    public void setSignUpUrl(String signUpUrl) {
+        this.signUpUrl = signUpUrl;
+    }
 
     public String getLoginPage() {
         return loginPage;

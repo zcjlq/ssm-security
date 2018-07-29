@@ -33,7 +33,7 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("登陆失败 MyAuthenticationSuccessHandler,异常信息为:{}", exception.getMessage());
+        log.info("登陆失败 MyAuthenticationFailureHandler,异常信息为:{}", exception.getMessage());
 
         // 如果是json，返回json，否则是html调用父类处理逻辑
         if (securityProperties.getBrowser().getLoginType().equals(LoginType.JSON)) {

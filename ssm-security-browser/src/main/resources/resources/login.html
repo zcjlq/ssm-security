@@ -33,9 +33,6 @@
                 <td colspan="2">
                     <button type="submit">登陆</button>
                 </td>
-                <div>
-                    ${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
-                </div>
             </tr>
         </table>
     </form>
@@ -56,12 +53,13 @@
                 <td colspan="2">
                     <button type="submit">登陆</button>
                 </td>
-                <div>
-                    ${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
-                </div>
             </tr>
         </table>
     </form>
+    <br>
+    <h2>社交登陆</h2>
+    <!-- 默认是/auth/qq qq是自定义的 由qqproperties里决定的 -->
+    <a href="/qqLogin/callback.do">QQ登陆</a>
 </div>
 </body>
 </html>

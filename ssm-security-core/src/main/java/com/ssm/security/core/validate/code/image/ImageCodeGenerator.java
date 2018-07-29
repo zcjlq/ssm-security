@@ -15,14 +15,14 @@ import java.util.Random;
  * @author 贾令强
  * @since 2018/7/10 21:40
  */
-@Component("imageCodeGenerator")
+@Component("imageValidateCodeGenerator")
 public class ImageCodeGenerator implements ValidateCodeGenerator {
 
     @Autowired
     private SecurityProperties securityProperties;
 
     @Override
-    public ImageCode generateCode(ServletWebRequest request) {
+    public ImageCode generate(ServletWebRequest request) {
         int width = ServletRequestUtils.getIntParameter(request.getRequest(), "width",
                 securityProperties.getCode().getImage().getWidth());
         int height = ServletRequestUtils.getIntParameter(request.getRequest(), "height",
@@ -82,11 +82,4 @@ public class ImageCodeGenerator implements ValidateCodeGenerator {
         return new Color(r, g, b);
     }
 
-    public SecurityProperties getSecurityProperties() {
-        return securityProperties;
-    }
-
-    public void setSecurityProperties(SecurityProperties securityProperties) {
-        this.securityProperties = securityProperties;
-    }
 }

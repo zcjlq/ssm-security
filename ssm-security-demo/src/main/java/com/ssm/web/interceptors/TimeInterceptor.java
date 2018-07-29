@@ -2,7 +2,6 @@ package com.ssm.web.interceptors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 public class TimeInterceptor implements HandlerInterceptor {
-    @Autowired
+
     private static final Logger log = LoggerFactory.getLogger(TimeInterceptor.class);
 
     /**

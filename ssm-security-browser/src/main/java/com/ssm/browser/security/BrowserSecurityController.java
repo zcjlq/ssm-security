@@ -1,5 +1,8 @@
 package com.ssm.browser.security;
 
+import com.ssm.browser.support.SimpleResponse;
+import com.ssm.browser.support.SocialUserInfo;
+import com.ssm.security.core.properties.SecurityConstants;
 import com.ssm.security.core.properties.SecurityProperties;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -11,9 +14,13 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.web.ProviderSignInUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +28,7 @@ import java.io.IOException;
 
 /**
  * TODO
+ *
  * @author 贾令强
  * @since 2018/6/23 22:36
  */
@@ -36,23 +44,33 @@ public class BrowserSecurityController {
 
     @Autowired
     private SecurityProperties securityProperties;
+    @Autowired
+    private ProviderSignInUtils providerSignInUtils;
 
-    @RequestMapping("/authentication/require")
+    @RequestMapping(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseContent requireAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         if (savedRequest != null) {
             String redirectUrl = savedRequest.getRedirectUrl();
             log.info("引发跳转的html为：" + redirectUrl);
             if (StringUtils.endsWithIgnoreCase(redirectUrl, ".html")) {
-                try {
-                    redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
+
             }
         }
-        return new ResponseContent("访问页面需要身份认证，请引导用户到认证页");
+        return new SimpleResponse("访问页面需要身份认证，请引导用户到认证页");
+    }
+
+    @GetMapping("/social/user")
+    public SocialUserInfo getSocialUserInfo(HttpServletRequest request) {
+        Connection<?> connection = providerSignInUtils.getConnectionFromSession(new ServletWebRequest(request));
+        SocialUserInfo userInfo = new SocialUserInfo();
+        userInfo.setProvideId(connection.getKey().getProviderId());
+        userInfo.setNickName(connection.getDisplayName());
+        userInfo.setProvideUserId(connection.getKey().getProviderUserId());
+        userInfo.setHeadimg(connection.getImageUrl());
+        return userInfo;
     }
 
 }

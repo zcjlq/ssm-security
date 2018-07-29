@@ -1,15 +1,15 @@
 package com.ssm.security.core.validate.code;
 
+import com.ssm.security.core.properties.SecurityConstants;
 import com.ssm.security.core.properties.SecurityProperties;
-import com.ssm.security.core.validate.code.image.ImageCode;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,10 +18,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 使用spring提供的过滤器，只执行一次
@@ -29,47 +28,51 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 贾令强
  * @since 2018/7/7 16:04
  */
+@Component("validateCodeFilter")
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
+    private static final Logger log = LoggerFactory.getLogger(ValidateCodeFilter.class);
 
-    private AuthenticationFailureHandler failureHandler;
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
-    private Set<String> urlSet = new HashSet<>();
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+    @Autowired
     private SecurityProperties securityProperties;
+    @Autowired
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
+
+    private Map<String, ValidateCodeType> urlMap = new HashMap<>();
+
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
-        // 配置需要验证码的url
-        String url = securityProperties.getCode().getImage().getUrl();
-        // 当配置文件没有配置ssm.securiy.code.image.url或者配置了一个时，此处会造成空指针
-        if (StringUtils.isNotBlank(url) && url.contains(",")) {
-            String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(
-                    url, ",");
-            urlSet.addAll(Arrays.asList(configUrls));
+
+        urlMap.put(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM, ValidateCodeType.IMAGE);
+        this.addUrlToMap(securityProperties.getCode().getImage().getUrl(), ValidateCodeType.IMAGE);
+
+        urlMap.put(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE, ValidateCodeType.SMS);
+        this.addUrlToMap(securityProperties.getCode().getSms().getUrl(), ValidateCodeType.SMS);
+    }
+
+    private void addUrlToMap(String urlString, ValidateCodeType type) {
+        if (StringUtils.isNotBlank(urlString)) {
+            String[] urls = StringUtils.splitByWholeSeparatorPreserveAllTokens(urlString, ",");
+            for (String url : urls) {
+                urlMap.put(url, type);
+            }
         }
-        // 不管配置文件是否配置url，登陆请求都要进行验证码认证
-        urlSet.add("/authentication/form");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("getServletPath" + request.getServletPath());
-        AtomicBoolean action = new AtomicBoolean(false);
-        urlSet.forEach(url -> {
-            if (pathMatcher.match(url, request.getServletPath())) {
-                action.set(true);
-            }
-        });
-
-
-        if (action.get()) {
-//            if (StringUtils.equals("", request.getServletPath())
-//                    && StringUtils.endsWithIgnoreCase(request.getMethod(), "post")) {
+        ValidateCodeType type = this.getValidateCodeType(request);
+        if (type != null) {
+            log.info("校验请求{}中的验证码,验证码类型{}" + type, request.getRequestURI());
             try {
-                validate(new ServletWebRequest(request));
+                validateCodeProcessorHolder.findValidateCodeProcessor(type).validate(new ServletWebRequest(request, response));
+                log.info("验证码校验通过");
             } catch (ValidateCodeException e) {
-                failureHandler.onAuthenticationFailure(request, response, e);
+                authenticationFailureHandler.onAuthenticationFailure(request, response, e);
                 return;
             }
         }
@@ -77,41 +80,17 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         filterChain.doFilter(request, response);
     }
 
-    private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request,
-                ValidateCodeController.SESSION_KEY);
-        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
-
-        if (StringUtils.isBlank(codeInRequest)) {
-            throw new ValidateCodeException("验证码的值为空");
+    private ValidateCodeType getValidateCodeType(HttpServletRequest request) {
+        ValidateCodeType validateCodeType = null;
+        if (!StringUtils.equalsIgnoreCase(request.getMethod(), "get")) {
+            Set<String> urls = urlMap.keySet();
+            for (String url : urls) {
+                if (pathMatcher.match(url, request.getRequestURI())) {
+                    validateCodeType = urlMap.get(url);
+                }
+            }
         }
-        if (codeInSession == null) {
-            throw new ValidateCodeException("验证码不存在");
-        }
-        if (codeInSession.isExpired()) {
-            sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
-            throw new ValidateCodeException("验证码已过期");
-        }
-        if (!StringUtils.equals(codeInSession.getCode(), codeInRequest)) {
-            throw new ValidateCodeException("验证码不匹配");
-        }
-
-        sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+        return validateCodeType;
     }
 
-    public AuthenticationFailureHandler getFailureHandler() {
-        return failureHandler;
-    }
-
-    public void setFailureHandler(AuthenticationFailureHandler failureHandler) {
-        this.failureHandler = failureHandler;
-    }
-
-    public SecurityProperties getSecurityProperties() {
-        return securityProperties;
-    }
-
-    public void setSecurityProperties(SecurityProperties securityProperties) {
-        this.securityProperties = securityProperties;
-    }
 }

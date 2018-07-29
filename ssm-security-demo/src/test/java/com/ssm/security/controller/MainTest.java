@@ -24,4 +24,11 @@ public class MainTest {
     public void testPost() {
         System.out.println(HttpMethod.POST);
     }
+
+    @Test
+    public void testBcry() {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encode = passwordEncoder.encode("123");
+        System.out.println(encode);
+    }
 }

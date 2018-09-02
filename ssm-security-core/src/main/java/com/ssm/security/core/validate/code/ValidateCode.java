@@ -1,13 +1,15 @@
 package com.ssm.security.core.validate.code;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @author 贾令强
  * @since 2018/7/17 20:59
  */
-public class ValidateCode {
+public class ValidateCode implements Serializable {
 
+    private static final long serialVersionUID = -5924077540305513951L;
     private String code;
 
     private LocalDateTime expireTime;

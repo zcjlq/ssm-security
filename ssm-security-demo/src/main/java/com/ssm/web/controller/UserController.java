@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -48,8 +49,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public User getCurrentUser(@AuthenticationPrincipal User user) {
-        log.info("controller /user/me,用户信息为：{}", user);
+    public UserDetails getCurrentUser(@AuthenticationPrincipal UserDetails user) {
+        log.info("controller+/user/me,用户信息为：{}", user);
         return user;
     }
 
@@ -94,6 +95,7 @@ public class UserController {
         User user = new User();
         user.setUserId(id);
         user.setUsername("tom");
+
         // 用户测试Controller异常，spring boot返回到前台内容，通过工具发起的请求，得到的响应是json格式，浏览器发起的请求，得到的响应是html形式
 //        throw new RuntimeException("RuntimeException");
         return user;

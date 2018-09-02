@@ -56,7 +56,7 @@ public class MyUserDetailsServiceImpl implements UserDetailsService, SocialUserD
         // 表单登陆时，userName代表用户名，社交登陆时，代表用户id
         if (b) {
             User user = userMapper.getUserByName(userName);
-            log.info(user.toString());
+            log.info("从数据库查到的用户信息" + user.toString());
         }
 
         // 此处使用spring自带user对象，实际项目用自定义的，

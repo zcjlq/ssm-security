@@ -1,5 +1,7 @@
 package com.ssm.security.core.properties;
 
+import org.springframework.boot.autoconfigure.social.SocialProperties;
+
 /**
  * @author 贾令强
  * @since 2018/7/29 16:51

@@ -48,4 +48,9 @@ public interface SecurityConstants {
      */
     String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
 
+    /**
+     * session失效默认跳转地址
+     */
+    String DEFAULT_SESSION_INVALID_URL = "/session-invalid.html";
+
 }

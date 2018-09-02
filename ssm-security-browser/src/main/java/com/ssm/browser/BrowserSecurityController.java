@@ -1,4 +1,4 @@
-package com.ssm.browser.security;
+package com.ssm.browser;
 
 import com.ssm.browser.support.SimpleResponse;
 import com.ssm.browser.support.SocialUserInfo;
@@ -71,6 +71,14 @@ public class BrowserSecurityController {
         userInfo.setProvideUserId(connection.getKey().getProviderUserId());
         userInfo.setHeadimg(connection.getImageUrl());
         return userInfo;
+    }
+
+    @GetMapping("/session/invalid")
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    public SimpleResponse sessionInvalid() {
+        log.info("session失效 controller");
+        String message = "session失效";
+        return new SimpleResponse(message);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ssm.browser.security;
+package com.ssm.browser;
 
 import com.ssm.security.core.authentication.AbstractChannelSecurityConfig;
 import com.ssm.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
@@ -12,8 +12,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -50,6 +53,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private SpringSocialConfigurer ssmSocialSecurityConfigurer;
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     /**
      * 使用spring提供的密码加密模式，相同密码每次加密后也不相同
@@ -95,12 +104,28 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSecond())
                 // 验证码配置
                 .and()
+                .sessionManagement()
+                .invalidSessionStrategy(invalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                // session 达到上限，阻止后来的登陆
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().getMaxSessionPreventsLogin())
+                .and()
+                .and()
+                .logout()
+                .logoutUrl("/signOut")
+//                .logoutSuccessUrl("/logout.html")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .deleteCookies("JSESSIONID")
+                .and()
                 .authorizeRequests()
                 .antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
                         SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                         securityProperties.getBrowser().getLoginPage(),
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
                         securityProperties.getBrowser().getSignUpUrl(),
+                        securityProperties.getBrowser().getSignOutUrl(),
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
                         "/user/register")
                 .permitAll()
                 .anyRequest()

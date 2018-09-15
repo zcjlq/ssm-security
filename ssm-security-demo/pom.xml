@@ -12,9 +12,14 @@
     <artifactId>ssm-security-demo</artifactId>
 
     <dependencies>
+        <!--<dependency>
+        <groupId>com.ssm.security</groupId>
+        <artifactId>ssm-security-browser</artifactId>
+        <version>${ssm.security.core}</version>
+    </dependency>-->
         <dependency>
             <groupId>com.ssm.security</groupId>
-            <artifactId>ssm-security-browser</artifactId>
+            <artifactId>ssm-security-app</artifactId>
             <version>${ssm.security.core}</version>
         </dependency>
         <dependency>

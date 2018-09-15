@@ -1,9 +1,9 @@
 package com.ssm.browser;
 
-import com.ssm.browser.support.SimpleResponse;
 import com.ssm.browser.support.SocialUserInfo;
 import com.ssm.security.core.properties.SecurityConstants;
 import com.ssm.security.core.properties.SecurityProperties;
+import com.ssm.security.core.support.SimpleResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

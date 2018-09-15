@@ -1,4 +1,4 @@
-package com.ssm.browser.support;
+package com.ssm.security.core.support;
 
 /**
  * @author 贾令强

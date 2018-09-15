@@ -1,8 +1,8 @@
 package com.ssm.browser.logout;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssm.browser.support.SimpleResponse;
 import com.ssm.security.core.properties.SecurityProperties;
+import com.ssm.security.core.support.SimpleResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

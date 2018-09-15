@@ -70,7 +70,7 @@ public class MyUserDetailsServiceImpl implements UserDetailsService, SocialUserD
         log.info("数据库密码（加密后的）:" + password);
         return new SocialUser(userName, password,
                 true, true, true, true,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
     }
 
 

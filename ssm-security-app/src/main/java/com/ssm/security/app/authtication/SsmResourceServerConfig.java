@@ -1,5 +1,6 @@
 package com.ssm.security.app.authtication;
 
+import com.ssm.security.app.social.openid.OpenIdAuthenticationSecurityConfig;
 import com.ssm.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.ssm.security.core.properties.SecurityConstants;
 import com.ssm.security.core.properties.SecurityProperties;
@@ -29,42 +30,50 @@ public class SsmResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationFailureHandler authenticationFailureHandler;
+
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Autowired
     private SpringSocialConfigurer ssmSocialSecurityConfigurer;
+
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
+
+
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        {
-            http.formLogin()
-                    .loginPage(SecurityConstants.DEFAULT_LOGIN_PAGE_URL)
-                    .loginProcessingUrl(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM)
-                    .successHandler(authenticationSuccessHandler)
-                    .failureHandler(authenticationFailureHandler);
+
+        http.formLogin()
+                .loginPage(SecurityConstants.DEFAULT_LOGIN_PAGE_URL)
+                .loginProcessingUrl(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM)
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler);
 //            .apply(validateCodeSecurityConfig)
 
-            http.apply(smsCodeAuthenticationSecurityConfig)
-                    .and()
-                    .apply(ssmSocialSecurityConfigurer)
-                    // 以下是记住我功能实现
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
-                            SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
-                            securityProperties.getBrowser().getLoginPage(),
-                            SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-                            securityProperties.getBrowser().getSignUpUrl(),
-                            securityProperties.getBrowser().getSignOutUrl(),
-                            securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
-                            "/user/register")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()// 需要身份认证
-                    .and().csrf().disable();
-        }
+        http.apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+                .apply(ssmSocialSecurityConfigurer)
+                .and()
+                .apply(openIdAuthenticationSecurityConfig)
+                .and()
+                .authorizeRequests()
+                .antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                        securityProperties.getBrowser().getLoginPage(),
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
+                        securityProperties.getBrowser().getSignUpUrl(),
+                        securityProperties.getBrowser().getSignOutUrl(),
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
+                        "/user/register")
+                .permitAll()
+                .anyRequest()
+                .authenticated()// 需要身份认证
+                .and().csrf().disable();
+
     }
 }

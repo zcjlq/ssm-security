@@ -25,6 +25,9 @@ public abstract class AbstractValidateCodeProcessorImpl<C extends ValidateCode> 
     @Autowired
     private Map<String, ValidateCodeGenerator> validateCodeGenerators;
 
+    @Autowired
+    private ValidateCodeRepository validateCodeRepository;
+
     @Override
     public void create(ServletWebRequest request) throws Exception {
         // 生成验证码
@@ -57,7 +60,7 @@ public abstract class AbstractValidateCodeProcessorImpl<C extends ValidateCode> 
      */
     private void save(ServletWebRequest request, C validateCode) {
         ValidateCode code = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
-        sessionStrategy.setAttribute(request, this.getSessionKey(), code);
+        validateCodeRepository.save(request, code, getValidateCodeType());
     }
 
     /**
@@ -82,9 +85,8 @@ public abstract class AbstractValidateCodeProcessorImpl<C extends ValidateCode> 
     @Override
     public void validate(ServletWebRequest request) {
         ValidateCodeType validateCodeType = this.getValidateCodeType();
-        String sessionKey = this.getSessionKey();
 
-        C codeInSession = (C) sessionStrategy.getAttribute(request, sessionKey);
+        C codeInSession = (C) validateCodeRepository.get(request, validateCodeType);
 
         String codeInRequest = null;
         try {
@@ -108,7 +110,7 @@ public abstract class AbstractValidateCodeProcessorImpl<C extends ValidateCode> 
             throw new ValidateCodeException(validateCodeType + "验证码不匹配");
         }
 
-        sessionStrategy.removeAttribute(request, sessionKey);
+        validateCodeRepository.remove(request, validateCodeType);
     }
 
     private String getSessionKey() {

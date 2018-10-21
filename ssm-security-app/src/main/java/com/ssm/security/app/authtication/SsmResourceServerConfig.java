@@ -43,8 +43,6 @@ public class SsmResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
 
-
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
 

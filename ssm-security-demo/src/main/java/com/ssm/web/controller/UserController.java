@@ -3,9 +3,13 @@ package com.ssm.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ssm.dto.User;
 import com.ssm.dto.UserQueryCondition;
+import com.ssm.security.core.properties.SecurityProperties;
 import com.ssm.web.exception.UserNotFoundException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -13,8 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -23,6 +26,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +43,8 @@ public class UserController {
 
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @PostMapping("/register")
     public String register(User user, HttpServletRequest request) {
@@ -49,10 +55,26 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserDetails getCurrentUser(@AuthenticationPrincipal UserDetails user) {
+    public Object getCurrentUser(Authentication user) {
         log.info("controller+/user/me,用户信息为：{}", user);
         return user;
     }
+
+    @GetMapping("/me1")
+    public Object getCurrentUserJwt(Authentication user, HttpServletRequest request) {
+        log.info("controller+/user/me,用户信息为：{}", user);
+        String header = request.getHeader("Authorization");
+        String token = StringUtils.substringAfter(header, "bearer ");
+
+        Claims claims = Jwts.parser()
+                .setSigningKey(securityProperties.getOauth2().getJwtSigningKey().getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(token).getBody();
+        String company = (String) claims.get("company");
+        log.info("->> jwt company :" + company);
+
+        return user;
+    }
+
 
     /**
      * @param queryCondition

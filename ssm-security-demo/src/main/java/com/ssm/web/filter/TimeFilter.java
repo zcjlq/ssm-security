@@ -18,19 +18,19 @@ public class TimeFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("...TimeFilter filter init");
+//        log.info("...TimeFilter filter init");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         long start = System.currentTimeMillis();
-        log.info("...TimeFilter filter doFilter start");
+//        log.info("...TimeFilter filter doFilter start");
         chain.doFilter(request, response);
-        log.info("...TimeFilter filter doFilter stop filter 耗时（秒）:" + (System.currentTimeMillis() - start));
+//        log.info("...TimeFilter filter doFilter stop filter 耗时（秒）:" + (System.currentTimeMillis() - start));
     }
 
     @Override
     public void destroy() {
-        log.info("...TimeFilter filter destroy");
+//        log.info("...TimeFilter filter destroy");
     }
 }

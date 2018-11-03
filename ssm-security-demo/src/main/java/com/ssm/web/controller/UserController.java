@@ -7,8 +7,6 @@ import com.ssm.security.core.properties.SecurityProperties;
 import com.ssm.web.exception.UserNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -86,7 +84,7 @@ public class UserController {
      */
     @GetMapping
     @JsonView(User.UserSimpleView.class)
-    @ApiOperation("查询用户信息")
+//    @ApiOperation("查询用户信息")
     public List<User> queryUser(UserQueryCondition queryCondition,
                                 @PageableDefault(size = 4, page = 2, sort = "age:desc") Pageable pageable) {
         // 通过反射将实体toString
@@ -112,7 +110,8 @@ public class UserController {
      */
     @GetMapping(value = "/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
-    public User getInfo(@ApiParam("传入id") @PathVariable("id") Integer id) {
+//    public User getInfo(@ApiParam("传入id") @PathVariable("id") Integer id) {
+    public User getInfo(@PathVariable("id") Integer id) {
         log.info("UserController getInfo方法传入参数id为:" + id);
         User user = new User();
         user.setUserId(id);

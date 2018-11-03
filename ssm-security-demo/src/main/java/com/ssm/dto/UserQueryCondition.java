@@ -1,7 +1,5 @@
 package com.ssm.dto;
 
-import io.swagger.annotations.ApiModelProperty;
-
 /**
  * @author 贾令强
  * @since 2018/6/17 21:49
@@ -10,10 +8,10 @@ public class UserQueryCondition {
 
     private int age;
 
-    @ApiModelProperty("用户名称，非空")
+    //    @ApiModelProperty("用户名称，非空")
     private String username;
 
-    @ApiModelProperty("用户年龄，非空")
+    //    @ApiModelProperty("用户年龄，非空")
     private int ageTo;
 
     public int getAge() {

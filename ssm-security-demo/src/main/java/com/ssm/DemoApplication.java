@@ -7,7 +7,6 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * @author 贾令强
@@ -15,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @RestController
-@EnableSwagger2
+//@EnableSwagger2
 @MapperScan("com.ssm.mapper")
 @EnableTransactionManagement(mode = AdviceMode.PROXY, proxyTargetClass = true)
 public class DemoApplication {

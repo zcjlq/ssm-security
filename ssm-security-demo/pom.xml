@@ -19,7 +19,7 @@
     </dependency>-->
         <dependency>
             <groupId>com.ssm.security</groupId>
-            <artifactId>ssm-security-app</artifactId>
+            <artifactId>ssm-security-browser</artifactId>
             <version>${ssm.security.core}</version>
         </dependency>
         <dependency>
@@ -41,12 +41,12 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.8.0</version>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
         <dependency>
             <groupId>io.springfox</groupId>

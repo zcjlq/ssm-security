@@ -21,19 +21,19 @@ public class TimeFilter2 implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("...TimeFilter2 filter init");
+//        log.info("...TimeFilter2 filter init");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         long start = System.currentTimeMillis();
-        log.info("...TimeFilter2 filter doFilter start");
+//        log.info("...TimeFilter2 filter doFilter start");
         chain.doFilter(request, response);
-        log.info("...TimeFilter2 filter doFilter stop filter 耗时（秒）:" + (System.currentTimeMillis() - start));
+//        log.info("...TimeFilter2 filter doFilter stop filter 耗时（秒）:" + (System.currentTimeMillis() - start));
     }
 
     @Override
     public void destroy() {
-        log.info("...TimeFilter2 filter destroy");
+//        log.info("...TimeFilter2 filter destroy");
     }
 }

@@ -1,15 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>index页</title>
+    <link rel="stylesheet" type="text/css" href="./plugin/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./plugin/easyui/themes/icon.css">
+    <script type="text/javascript" src="./plugin/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="./plugin/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="./plugin/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="./js/util/common.js"></script>
+    <script type="application/javascript" src="./js/index.js"></script>
+    <title>index</title>
 </head>
-<body>
-<h2>index</h2>
-<h3><a href="/logout">默认退出</a></h3>
-<h3><a href="/signOut">自定义退出</a></h3>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height:60px;padding:10px">
+    <h3><a href="/logout">默认退出</a>
+        <a href="/signOut">自定义退出</a></h3>
+</div>
+<div data-options="region:'west',split:true,title:'West'" style="width:180px;padding:10px;">
+    <ul class="easyui-tree" id="tree"></ul>
+</div>
+<div data-options="region:'south',border:false" style="height:50px;padding:10px;">
+    south region
+</div>
+
+<div data-options="region:'center',title:'Center'">
+    <div class="easyui-tabs" id="tabs" data-options="fit:true,border:false,plain:true">
+        <div title="DataGrid" style="padding:5px" data-options="tools:'#p-tools'">
+            <div>
+                <table style="margin: 0 auto">
+                    <tr>
+                        <td>
+                            <select id="multiId" class="easyui-combobox"></select>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add'"
+                               onclick="addFun()">新增</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add'"
+                               onclick="deleteFun()">删除</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table id="dg" class="easyui-datagrid">
+            </table>
+        </div>
+        <div title="About1" data-options="href:'../../data/_content.html'" style="padding:10px"></div>
+    </div>
+</div>
+<div class="easyui-dialog" id="addDialog" title="Fluid Dialog"
+     style="width:30%;height:360px;max-width:800px;padding:10px">
+    <form id="addForm">
+        <table>
+            <tr>
+                <td>itemId</td>
+                <td><input type="text" name="itemId" class="easyui-textbox" required="true"></td>
+            </tr>
+            <tr>
+                <td>productId</td>
+                <td><input type="text" name="productId" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td>listPrice</td>
+                <td><input type="text" name="listPrice" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td>unitCost</td>
+                <td><input type="text" name="unitCost" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td>attr1</td>
+                <td><input type="text" name="attr1" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td>status</td>
+                <td><input type="text" name="status1" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <a href="javascript:void(0)" data-options="iconCls:'icon-add'" class="easyui-linkbutton"
+                       onclick="addForm()">提交</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="p-tools">
+    <a href="javascript:void(0)" class="icon-mini-add" onclick="alert('add')"></a>
+    <a href="javascript:void(0)" class="icon-mini-edit" onclick="alert('edit')"></a>
+    <a href="javascript:void(0)" class="icon-mini-refresh" onclick="alert('refresh')"></a>
+</div>
 </body>
 </html>

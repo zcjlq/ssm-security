@@ -1,6 +1,6 @@
 package com.ssm.web.service;
 
-import com.ssm.generator.model.User;
+import com.ssm.dto.base.user.User;
 
 /**
  * @author 贾令强

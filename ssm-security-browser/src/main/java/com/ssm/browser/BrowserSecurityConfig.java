@@ -113,10 +113,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         securityProperties.getBrowser().getSignUpUrl(),
                         securityProperties.getBrowser().getSignOutUrl(),
                         securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
-                        "/user/register")
+                        "/user/register",
+                        "/plugin/**", "/js/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()// 需要身份认证
-                .and().csrf().disable();
+                .and().csrf().disable()
+                .headers().frameOptions().sameOrigin();
     }
 }

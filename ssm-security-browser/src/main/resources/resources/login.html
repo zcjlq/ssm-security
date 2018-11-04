@@ -5,24 +5,36 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="plugin/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="plugin/easyui/themes/icon.css">
+    <script type="text/javascript" src="plugin/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="plugin/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="plugin/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="./js/util/common.js"></script>
+    <script type="text/javascript" src="./js/login.js"></script>
     <title>登陆</title>
 </head>
-<body>
-<div style="margin: 0 auto">
+<body class="easyui-layout">
+<div class="easyui-panel" data-options="region:'center',title:'Center'"
+     style="width: 300px;height: 600px;margin: 0 auto">
+    <div>
     <h2>标准登陆页面</h2>
-    <form action="/authentication/form" method="post">
+        <form id="loginForm" action="/authentication/form" method="post">
         <table>
             <tr>
                 <td>用户名：</td>
-                <td><input type="text" name="username"></td>
+                <td><input required id="username" type="text" name="username"
+                           data-options="required:true"></td>
             </tr>
             <tr>
                 <td>密码：</td>
-                <td><input type="password" name="password"></td>
+                <td><input required id="password" type="password" name="password"
+                           data-options="required:true"></td>
             </tr>
             <tr>
                 <td>图形验证码：</td>
-                <td><input type="text" name="imageCode">
+                <td><input required id="imageCode" type="text" name="imageCode"
+                           data-options="required:true">
                     <img src="/code/image?length=6"></td>
             </tr>
             <!--name必须为"remember-me"-->
@@ -61,6 +73,7 @@
     <!-- 默认是/auth/qq qq是自定义的 由qqproperties里决定的 -->
     <a href="/qqLogin/callback.do">QQ登陆</a><br/>
     <a href="/qqLogin/weixin">微信登陆</a>
+    </div>
 </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.ssm.web.config;
 
 import com.ssm.web.filter.TimeFilter2;
+import com.ssm.web.interceptors.OperLogInterceptor;
 import com.ssm.web.interceptors.TimeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 配置拦截器
+ *
  * @author 贾令强
  * @since 2018/6/18 14:37
  */
@@ -22,10 +25,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private TimeInterceptor timeInterceptor;
+    @Autowired
+    private OperLogInterceptor operLogInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(timeInterceptor);
+        registry.addInterceptor(operLogInterceptor);
     }
 
     @Bean

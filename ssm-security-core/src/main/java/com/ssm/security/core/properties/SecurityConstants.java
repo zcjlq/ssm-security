@@ -30,7 +30,7 @@ public interface SecurityConstants {
     /**
      * 默认的OPENID登录请求处理url
      */
-    public static final String DEFAULT_LOGIN_PROCESSING_URL_OPENID = "/authentication/openid";
+    String DEFAULT_LOGIN_PROCESSING_URL_OPENID = "/authentication/openid";
 
     /**
      * 默认登陆页面
@@ -59,9 +59,9 @@ public interface SecurityConstants {
     /**
      * openid参数名
      */
-    public static final String DEFAULT_PARAMETER_NAME_OPENID = "openId";
+    String DEFAULT_PARAMETER_NAME_OPENID = "openId";
     /**
      * providerId参数名
      */
-    public static final String DEFAULT_PARAMETER_NAME_PROVIDERID = "providerId";
+    String DEFAULT_PARAMETER_NAME_PROVIDERID = "providerId";
 }

@@ -1,7 +1,7 @@
 package com.ssm.web.service.impl;
 
-import com.ssm.generator.model.User;
-import com.ssm.mapper.UserMapper;
+import com.ssm.dto.base.user.User;
+import com.ssm.mapper.base.user.UserMapper;
 import com.ssm.web.service.UserDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +36,8 @@ public class UserDatabaseServiceImpl implements UserDatabaseService {
         // 默认PROPAGATION_REQUIRED,ISOLATION_DEFAULT
 //        User user = userMapper.selectByPrimaryKey(Integer.valueOf(id));
         User user1 = new User();
-        user1.setId(55);
-        user1.setName("111111");
+        user1.setTid(55);
+        user1.setUsername("111111");
         userMapper.insertSelective(user1);
         User user = userMapper.selectByPrimaryKey(55);
         log.info("add 从数据库查到的用户信息为：" + user.toString());

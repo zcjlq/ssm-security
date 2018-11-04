@@ -1,6 +1,6 @@
 package com.ssm.web.controller;
 
-import com.ssm.generator.model.User;
+import com.ssm.dto.base.user.User;
 import com.ssm.web.service.UserDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

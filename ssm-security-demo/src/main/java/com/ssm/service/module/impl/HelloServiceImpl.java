@@ -1,4 +1,4 @@
-package com.ssm.service.impl;
+package com.ssm.service.module.impl;
 
 import com.ssm.service.HelloService;
 import org.springframework.stereotype.Service;

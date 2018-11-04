@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class TimeAspect {
     private static final Logger log = LoggerFactory.getLogger(TimeAspect.class);
 
-    @Around("execution(* com.ssm.web.controller.UserController.*(..))")
+    @Around("execution(* com.ssm.web.controller.base.user.UserController.*(..))")
     public Object timeAspect(ProceedingJoinPoint pjp) throws Throwable {
         log.info("...进入time aspect");
         Object[] args = pjp.getArgs();

@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="./plugin/easyui/themes/default/easyui.css">
+    <link id="easyuiTheme" rel="stylesheet" type="text/css" href="./plugin/easyui/themes/black/easyui.css">
     <link rel="stylesheet" type="text/css" href="./plugin/easyui/themes/icon.css">
     <script type="text/javascript" src="./plugin/easyui/jquery.min.js"></script>
     <script type="text/javascript" src="./plugin/easyui/jquery.easyui.min.js"></script>
@@ -17,7 +17,33 @@
 <body class="easyui-layout">
 <div data-options="region:'north',border:false" style="height:60px;padding:10px">
     <h3><a href="/logout">默认退出</a>
-        <a href="/signOut">自定义退出</a></h3>
+        <a href="/signOut">自定义退出</a>
+        <!--切换主题-->
+        <div style="position: absolute;right: 14px;top:42px;">
+            <div class="easyui-panel" style="padding:5px;font-size: 20px;font-weight: 900;">
+                <a href="javascript:void(0);" class="easyui-menubutton"
+                   data-options="menu:'#layout_north_pfMenu',iconCls:'icon-ok'">更换皮肤</a>
+            </div>
+        </div>
+        <div id="layout_north_pfMenu" style=" display: none;">
+            <div onclick="changeTheme('default');">default</div>
+            <div onclick="changeTheme('black');">black</div>
+            <div onclick="changeTheme('bootstrap');">bootstrap</div>
+            <div onclick="changeTheme('gray');">gray</div>
+            <div onclick="changeTheme('material');">material</div>
+            <div onclick="changeTheme('metro');">metro</div>
+            <div onclick="changeTheme('icons');">icons</div>
+            <!--   <div onclick="changeTheme('metro-blue');">metro-blue</div>
+               <div onclick="changeTheme('metro-gray');">metro-gray</div>
+               <div onclick="changeTheme('metro-green');">metro-green</div>
+               <div onclick="changeTheme('metro-red');">metro-red</div>
+               <div onclick="changeTheme('metro-orange');">metro-orange</div>
+               <div onclick="changeTheme('ui-cupertino');">ui-cupertino</div>
+               <div onclick="changeTheme('ui-dark-hive');">ui-dark-hive</div>
+               <div onclick="changeTheme('ui-pepper-grinder');">ui-pepper-grinder</div>
+               <div onclick="changeTheme('ui-sunny');">ui-sunny</div>-->
+        </div>
+    </h3>
 </div>
 <div data-options="region:'west',split:true,title:'West'" style="width:180px;padding:10px;">
     <ul class="easyui-tree" id="tree"></ul>

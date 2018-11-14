@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.base.log.OperLogMapper">
+    <resultMap id="BaseResultMap" type="com.ssm.dto.base.log.OperLog">
+        <result column="tid" jdbcType="INTEGER" property="tid"/>
+        <result column="oper_user_tid" jdbcType="INTEGER" property="operUserTid"/>
+        <result column="oper_user" jdbcType="VARCHAR" property="operUser"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
+        <result column="module_name" jdbcType="VARCHAR" property="moduleName"/>
+        <result column="oper_type" jdbcType="VARCHAR" property="operType"/>
+        <result column="controller" jdbcType="VARCHAR" property="controller"/>
+        <result column="method" jdbcType="VARCHAR" property="method"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="log_type" jdbcType="VARCHAR" property="logType"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="use_time" jdbcType="VARCHAR" property="useTime"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.ssm.dto.base.log.OperLog">
+        insert into base_oper_log (tid,
+                                   oper_user_tid,
+                                   oper_user,
+                                   ip,
+                                   module_name,
+                                   oper_type,
+                                   controller,
+                                   method,
+                                   remark,
+                                   log_type,
+                                   start_time,
+                                   end_time,
+                                   use_time)
+        values (#{tid,jdbcType=INTEGER},
+                #{operUserTid,jdbcType=INTEGER},
+                #{operUser,jdbcType=VARCHAR},
+                #{ip,jdbcType=VARCHAR},
+                #{moduleName,jdbcType=VARCHAR},
+                #{operType,jdbcType=VARCHAR},
+                #{controller,jdbcType=VARCHAR},
+                #{method,jdbcType=VARCHAR},
+                #{remark,jdbcType=VARCHAR},
+                #{logType,jdbcType=BIT},
+                #{startTime,jdbcType=VARCHAR},
+                #{endTime,jdbcType=TIMESTAMP},
+                #{useTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ssm.dto.base.log.OperLog">
+        insert into base_oper_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null">
+                tid,
+            </if>
+            <if test="operUserTid != null">
+                oper_user_tid,
+            </if>
+            <if test="operUser != null">
+                oper_user,
+            </if>
+            <if test="ip != null">
+                ip,
+            </if>
+            <if test="moduleName != null">
+                module_name,
+            </if>
+            <if test="operType != null">
+                oper_type,
+            </if>
+            <if test="controller != null">
+                controller,
+            </if>
+            <if test="method != null">
+                method,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="logType != null">
+                log_type,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="useTime != null">
+                use_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null">
+                #{tid,jdbcType=INTEGER},
+            </if>
+            <if test="operUserTid != null">
+                #{operUserTid,jdbcType=INTEGER},
+            </if>
+            <if test="operUser != null">
+                #{operUser,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleName != null">
+                #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="operType != null">
+                #{operType,jdbcType=VARCHAR},
+            </if>
+            <if test="controller != null">
+                #{controller,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null">
+                #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="logType != null">
+                #{logType,jdbcType=BIT},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="useTime != null">
+                #{useTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="queryAll" resultMap="BaseResultMap">
+        select * from base_oper_log where 1 = 1
+        <if test="startDate != null and startDate != ''">
+            and date_format(start_time,'%Y-%m-%d') >= #{startDate,jdbcType=VARCHAR}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and date_format(end_time,'%Y-%m-%d') &lt;= #{endDate,jdbcType=VARCHAR}
+        </if>
+        <if test="logType != null and logType != ''">
+            and log_type = #{logType,jdbcType=VARCHAR}
+        </if>
+        <if test="moduleName != null and moduleName != ''">
+            and (module_name like '%' #{moduleName,jdbcType=VARCHAR} '%'
+            or controller like '%' #{moduleName,jdbcType=VARCHAR} '%')
+        </if>
+        <if test="ip != null and ip != ''">
+            and ip like '%' #{ip,jdbcType=VARCHAR} '%'
+        </if>
+        <if test="operUser != null and operUser != ''">
+            and oper_user like '%' #{operUser,jdbcType=VARCHAR} '%'
+        </if>
+        order by tid desc
+    </select>
+</mapper>

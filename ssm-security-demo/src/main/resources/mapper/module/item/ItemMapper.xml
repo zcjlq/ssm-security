@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.module.item.ItemMapper">
+    <!--
+        <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+    -->
+    <resultMap id="baseResultMap" type="com.ssm.dto.module.item.Item">
+        <id column="tid" property="tid"/>
+        <result column="item_id" property="itemId"/>
+        <result column="product_id" property="productId"/>
+        <result column="list_price" property="listPrice"/>
+        <result column="unit_cost" property="unitCost"/>
+        <result column="attr1" property="attr1"/>
+        <result column="status1" property="status1"/>
+        <result column="last_update" property="lastUpdate"/>
+    </resultMap>
+    <delete id="delete" parameterType="java.util.List">
+        delete from item WHERE item_id in
+        <foreach collection="list" item="itemId" open="(" separator="," close=")">
+            #{itemId}
+        </foreach>
+    </delete>
+    <select id="addItem" parameterType="com.ssm.dto.module.item.Item">
+        INSERT INTO item
+        SET item_id     = #{itemId},
+            product_id  = #{productId},
+            list_price  = #{listPrice},
+            unit_cost   = #{unitCost},
+            attr1       = #{attr1},
+            status1     = #{status1},
+            last_update = now()
+    </select>
+
+    <select id="getItemList" resultMap="baseResultMap">
+        SELECT *
+        FROM item t
+        ORDER BY t.item_id
+    </select>
+
+</mapper>

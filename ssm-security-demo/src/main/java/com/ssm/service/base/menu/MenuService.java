@@ -15,9 +15,13 @@ public interface MenuService {
 
     List<Menu> getFunctionTree1();
 
-    List<MenuVo> getMenus();
+    List<MenuVo> getMenus(String parentModule, Menu menu);
 
     List<Menu> getParents();
 
-    Boolean saveMenu(Menu menu);
+    int saveMenu(Menu menu, String userName);
+
+    int deleteMenu(Integer[] ids, String userName);
+
+    int updateMenu(Menu menu, String userName);
 }

@@ -23,54 +23,46 @@
             <form id="search_form">
                 <table style="margin: 0 auto">
                     <tr>
-                        <!--<td>-->
-                        <!--<label for="ip">日志类型：</label><input id="menuState" name="menuState" class="easyui-combobox"/>-->
-                        <!--</td>-->
-                        <td><label for="ip">模块：</label><input id="moduleName" name="moduleName" class="easyui-textbox"/>
+                        <td><label for="parentModule">父节点菜单：</label><input id="parentModule" name="parentModule"
+                                                                           class="easyui-textbox"/>
                         </td>
-                        <td><label for="ip">ip：</label><input id="ip" name="ip" class="easyui-textbox"/></td>
-                        <td><label for="operUser">操作用户：</label><input id="operUser" name="operUser"
-                                                                      class="easyui-textbox"/>
+                        <td><label for="text">菜单名称：</label><input id="text" name="text" class="easyui-textbox"/></td>
+                        <td><label for="url">url：</label><input id="url" name="url" class="easyui-textbox"/></td>
+                        <td><label for="operUser">操作用户：</label>
+                            <input id="operUser" name="operUser" class="easyui-textbox"/>
                         </td>
                         <td><a href="javascript:void(0)" id="searchBtn" name="searchBtn"
                                data-options="plain:true,iconCls:'icon-search'"
-                               class="easyui-linkbutton" onclick="searchLog()">查询</a>
+                               class="easyui-linkbutton" onclick="searchMenu()">查询</a>
                         </td>
                         <td><a href="javascript:void(0)" id="resetBtn"
-                               data-options="plain:true,iconCls:'icon-undo'"
-                               class="easyui-linkbutton" onclick="resetCondition()">重置</a>
+                               data-options="plain:true,iconCls:'icon-reload'"
+                               class="easyui-linkbutton" onclick="resetMenu()">重置</a>
                         </td>
                     </tr>
                 </table>
             </form>
         </div>
-        <!--<div data-options="region:'south'">-->
-        <!--<div style="float: right;margin-right: 40px" data-options="border:false">-->
-        <!--<table>-->
-        <!--<tr>-->
-        <!--</tr>-->
-        <!--</table>-->
-        <!--</div>-->
-        <!--</div>-->
     </div>
 </div>
 <div data-options="region:'center',border:false">
     <div id="toolbar">
         <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'"
            onclick="addMenu()">新增</a>
-        <!--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Edit User</a>-->
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'"
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit'"
+           onclick="updateMenu()">修改</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"
            onclick="deleteMenu()">删除</a>
     </div>
-    <table id="dg" class="easyui-datagrid"></table>
+    <table id="dg_menu" class="easyui-datagrid"></table>
 </div>
 <!--新增对话框-->
-<div id="addMenuDialog" class="easyui-dialog" data-options="closed:true" style="width:400px;height:200px;padding:10px">
+<div id="addMenuDialog" class="easyui-dialog" data-options="closed:true">
     <form id="addMenuForm" method="post">
-        <table align="center" style="text-align: right;">
+        <table align="center" style="text-align: right;margin: 0 auto;">
             <tr>
                 <td>菜单名称</td>
-                <td><input id="add_menuName" name="menuName" class="easyui-textbox" required></td>
+                <td><input id="add_menuName" name="text" class="easyui-textbox" required></td>
             </tr>
             <tr>
                 <td>父菜单名称</td>
@@ -87,6 +79,34 @@
             <tr>
                 <td>state</td>
                 <td><input id="add_state" name="state" class="easyui-combobox"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!--修改对话框-->
+<div id="updateMenuDialog" class="easyui-dialog" data-options="closed:true,title:'修改菜单'">
+    <form id="updateMenuForm" method="post">
+        <table align="center" style="text-align: right;margin: 0 auto;">
+            <tr>
+                <td>菜单名称</td>
+                <td><input id="update_menuName" name="text" class="easyui-textbox" required>
+                    <input name="id" type="hidden"></td>
+            </tr>
+            <tr>
+                <td>父菜单名称</td>
+                <td><input id="update_parentMenuId" name="parentId" class="easyui-combobox"></td>
+            </tr>
+            <tr>
+                <td>图标</td>
+                <td><input id="update_iconcls" name="iconCls" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td>url</td>
+                <td><input id="update_url" name="url" class="easyui-textbox"></td>
+            </tr>
+            <tr>
+                <td>state</td>
+                <td><input id="update_state" name="state" class="easyui-combobox"></td>
             </tr>
         </table>
     </form>

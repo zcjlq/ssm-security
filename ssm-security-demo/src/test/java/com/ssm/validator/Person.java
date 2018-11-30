@@ -9,13 +9,13 @@ import java.util.List;
 
 public class Person {
 
-    @AssertTrue(message = "属性assertTrue只能为true")
+    @AssertTrue(message = "属性assertTrue只能为true", groups = GroupA.class)
     private Boolean assertTrue;
 
     //    @NotNull(message = "student不能为null")
     private Student student;
 
-    @Pattern(regexp = "^\\w+$", message = "'${validatedValue}'登陆用户名只能是英文字母")
+    @Pattern(regexp = "^\\w+$", message = "'${validatedValue}'登陆用户名只能是英文字母", groups = GroupB.class)
     private String name;
 
     @Min(value = 18, message = "年龄必须大于等于18")
@@ -48,6 +48,35 @@ public class Person {
 
     @Past(message = "生日必须小于当前时间")
     private Date birthday;
+
+    @NotEmpty(message = "not empty")
+    private String stringEmpty;
+
+    @NotBlank(message = "not blank")
+    private String stringBlank;
+
+    public Person() {
+    }
+
+    public Person(@NotEmpty String name) {
+        this.name = name;
+    }
+
+    public String getStringEmpty() {
+        return stringEmpty;
+    }
+
+    public void setStringEmpty(String stringEmpty) {
+        this.stringEmpty = stringEmpty;
+    }
+
+    public String getStringBlank() {
+        return stringBlank;
+    }
+
+    public void setStringBlank(String stringBlank) {
+        this.stringBlank = stringBlank;
+    }
 
     public Date getBirthday() {
         return birthday;

@@ -12,7 +12,7 @@ $(function () {
 
 function initTree() {
     $("#tree").tree({
-        url: '/menu/tree',
+        url: '/menu/tree1',
         method: 'get',
         animate: true,
         dnd: true,
@@ -67,7 +67,7 @@ function initComboBox() {
         }],
         onchange: function () {
             console.log('this' + this);
-            $('#dg').datagrid({singleSelect: (this.value == 0)})
+            $('#dg_index').datagrid({singleSelect: (this.value == 0)})
         }, onLoadSuccess: function () {
         }
     })
@@ -82,9 +82,8 @@ function addFun() {
 // 增加提交
 function addForm() {
     $.post('/menu/add', $('#addForm').serializeJSON(), function (obj) {
-        console.log(obj);
         $('#addDialog').dialog({closed: true});
-        $('#dg').datagrid('reload');
+        $('#dg_index').datagrid('reload');
     });
 }
 
@@ -101,8 +100,8 @@ function initAddDialog() {
 
 // 初始化datagrid
 function initDataGrid() {
-    $('#dg').datagrid({
-        url: '/menu/list',
+    $('#dg_index').datagrid({
+        url: '',//'/menu/list',
         method: 'get',
         singleSelect: false,
         fit: true,
@@ -125,7 +124,7 @@ function initDataGrid() {
 
 // 删除
 function deleteFun() {
-    var rows = $('#dg').datagrid('getSelections');
+    var rows = $('#dg_index').datagrid('getSelections');
 
     var itemIds = [];
     if (rows) {
@@ -144,11 +143,11 @@ function deleteFun() {
                     dataType: 'json',
                     success: function (result) {
                         // todo 没有进入成功回调，进入了错误的
-                        $('#dg').datagrid('reload');
+                        $('#dg_index').datagrid('reload');
 
                         console.log(result);
                         if (result) {
-                            $('#dg').datagrid('reload');
+                            $('#dg_index').datagrid('reload');
                         } else {
                             $.messager.show({    // show error message
                                 title: 'Error',
@@ -156,7 +155,7 @@ function deleteFun() {
                             });
                         }
                     }, error: function (obj) {
-                        $('#dg').datagrid('reload');
+                        $('#dg_index').datagrid('reload');
                         console.log('error' + obj)
                     }
 

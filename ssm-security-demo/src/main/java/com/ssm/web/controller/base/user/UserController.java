@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -154,14 +155,9 @@ public class UserController {
 
     @PostMapping
     @JsonView(User.UserSimpleView.class)
-    public User create(@Valid @RequestBody User user, BindingResult bindingResult) {
+    public User create(@Validated @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> {
-                FieldError fieldError = (FieldError) error;
-                log.info(fieldError.getField() +
-                        ",值为：" + fieldError.getRejectedValue() +
-                        ",错误消息为：" + error.getDefaultMessage());
-            });
+            bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
         }
         log.info(ReflectionToStringBuilder.toString(user, ToStringStyle.MULTI_LINE_STYLE));
         user.setUserId(1);

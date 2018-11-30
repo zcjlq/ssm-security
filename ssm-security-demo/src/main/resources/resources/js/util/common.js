@@ -50,3 +50,14 @@ function formatDate(value) {
 
     return dt.format("yyyy-MM-dd"); //扩展的Date的format方法(上述插件实现)
 }
+
+function msg(data) {
+    if (data) {
+        return;
+    }
+    $.messager.alert({
+        title: '提示',
+        msg: data,
+        showType: 'info'
+    });
+}

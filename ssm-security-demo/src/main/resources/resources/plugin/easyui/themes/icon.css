@@ -121,3 +121,18 @@
 .icon-large-chart {
     background: url('icons/large_chart.png') no-repeat center center;
 }
+
+/*系统参数*/
+.icon-sys-param {
+    background: url('../../icons/sys-param.png') no-repeat center center;
+}
+
+/*数据字典*/
+.icon-dict {
+    background: url('../../icons/dict.png') no-repeat center center;
+}
+
+/*日志*/
+.icon-log {
+    background: url('../../icons/log.png') no-repeat center center;
+}

@@ -24,7 +24,7 @@ public class Menu implements Serializable {
     private String attributes;
 
     // 图标
-    private String iconcls;
+    private String iconCls;
 
     // url
     private String url;
@@ -83,12 +83,12 @@ public class Menu implements Serializable {
         this.attributes = attributes;
     }
 
-    public String getIconcls() {
-        return iconcls;
+    public String getIconCls() {
+        return iconCls;
     }
 
-    public void setIconcls(String iconcls) {
-        this.iconcls = iconcls;
+    public void setIconCls(String iconCls) {
+        this.iconCls = iconCls;
     }
 
     public String getUrl() {
@@ -157,7 +157,7 @@ public class Menu implements Serializable {
                 Objects.equals(getState(), menu.getState()) &&
                 Objects.equals(getChecked(), menu.getChecked()) &&
                 Objects.equals(getAttributes(), menu.getAttributes()) &&
-                Objects.equals(getIconcls(), menu.getIconcls()) &&
+                Objects.equals(getIconCls(), menu.getIconCls()) &&
                 Objects.equals(getUrl(), menu.getUrl()) &&
                 Objects.equals(getIsExpand(), menu.getIsExpand()) &&
                 Objects.equals(getParentId(), menu.getParentId()) &&
@@ -169,7 +169,7 @@ public class Menu implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getText(), getState(), getChecked(), getAttributes(), getIconcls(), getUrl(), getIsExpand(), getParentId(), getOperUser(), getCreateTime(), getLastUpdate(), getChildren());
+        return Objects.hash(getId(), getText(), getState(), getChecked(), getAttributes(), getIconCls(), getUrl(), getIsExpand(), getParentId(), getOperUser(), getCreateTime(), getLastUpdate(), getChildren());
     }
 
     @Override
@@ -180,7 +180,7 @@ public class Menu implements Serializable {
                 ", state='" + state + '\'' +
                 ", checked='" + checked + '\'' +
                 ", attributes='" + attributes + '\'' +
-                ", iconcls='" + iconcls + '\'' +
+                ", iconCls='" + iconCls + '\'' +
                 ", url='" + url + '\'' +
                 ", isExpand='" + isExpand + '\'' +
                 ", parentId=" + parentId +

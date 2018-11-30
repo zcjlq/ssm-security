@@ -19,7 +19,7 @@
     <h3><a href="/logout">默认退出</a>
         <a href="/signOut">自定义退出</a>
         <!--切换主题-->
-        <div style="position: absolute;right: 14px;top:42px;">
+        <div style="position: absolute;right: 14px;top:12px;">
             <div class="easyui-panel" style="padding:5px;font-size: 20px;font-weight: 900;">
                 <a href="javascript:void(0);" class="easyui-menubutton"
                    data-options="menu:'#layout_north_pfMenu',iconCls:'icon-ok'">更换皮肤</a>
@@ -48,9 +48,9 @@
 <div data-options="region:'west',split:true,title:'West'" style="width:180px;padding:10px;">
     <ul class="easyui-tree" id="tree"></ul>
 </div>
-<div data-options="region:'south',border:false" style="height:50px;padding:10px;">
+<!--<div data-options="region:'south',border:false" style="height:50px;padding:10px;">
     south region
-</div>
+</div>-->
 
 <div data-options="region:'center',title:'Center'">
     <div class="easyui-tabs" id="tabs" data-options="fit:true,border:false,plain:true">
@@ -68,7 +68,7 @@
                     </tr>
                 </table>
             </div>
-            <table id="dg" class="easyui-datagrid">
+            <table id="dg_index" class="easyui-datagrid">
             </table>
         </div>
         <div title="About1" data-options="href:'../../data/_content.html'" style="padding:10px"></div>

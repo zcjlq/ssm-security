@@ -1,5 +1,6 @@
 package com.ssm.validator;
 
+import com.ssm.validator.annotation.ValidPart;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +11,12 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author 贾令强
@@ -36,10 +38,10 @@ public class TestValidator {
     @After
     public void after() {
         Set<ConstraintViolation<Person>> validate = validator.validate(person);
-        log.info("校验没有通过的数量为：[{}]", validate.size());
+        log.info("person校验没有通过的数量为：[{}]", validate.size());
         for (ConstraintViolation<Person> violation : validate) {
             String message = violation.getMessage();
-            log.info("校验结果为：[{}]", message);
+            log.info("person校验结果为：[{}]", message);
         }
     }
 
@@ -129,5 +131,83 @@ public class TestValidator {
             log.info("校验信息[{}]", message);
         }
     }
+
+    @Test
+    public void testBlank() {
+        person.setStringBlank(null);
+        person.setStringEmpty("  ");
+        Set<ConstraintViolation<Person>> validate = validator.validate(person);
+        log.info("没有通过的数量为：[{}]", validate.size());
+    }
+
+    @Test
+    public void testSet() {
+        Set<@ValidPart String> parts = new HashSet<>();
+        parts.add("a");
+        parts.add(null);
+
+    }
+
+    @Test
+    public void testConstructor() {
+        Person person = new Person("  ");
+        Set<ConstraintViolation<Person>> validate = validator.validate(person);
+        log.info("没有通过的数量为：[{}]", validate.size());
+    }
+
+    @Test
+    public void testList() {
+        Cat cat = new Cat();
+        cat.setName("1");
+        cat.setEmail(Arrays.asList("sevenlin@gmail.com", "sevenlin.com", null));
+        cat.setStrings(Arrays.asList(" ", "", "2", null));
+        Set<ConstraintViolation<Cat>> result = Validation.buildDefaultValidatorFactory().getValidator().validate(cat);
+        result.stream().forEach(ConstraintViolation::getMessage);
+        result.forEach(v -> log.info(v.getMessage()));
+
+//        List<String> message = result.stream().map(v -> v.getPropertyPath() + " " + v.getMessage() + ": " + v.getInvalidValue())
+//                .collect(Collectors.toList());
+
+//        message.forEach(System.out::println);
+
+//        log.info("没有通过的数量为：[{}]", validator.validate(list).size());
+    }
 }
+
+
+class Cat {
+
+    @Size(min = 3)
+    private String name;
+
+    private List<@Email String> email;
+
+    @Size(min = 6, message = "string长度大于6")
+    private List<@NotBlank(message = "list内不能为blank") String> strings;
+
+    public List<String> getStrings() {
+        return strings;
+    }
+
+    public void setStrings(List<String> strings) {
+        this.strings = strings;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getEmail() {
+        return email;
+    }
+
+    public void setEmail(List<String> email) {
+        this.email = email;
+    }
+}
+
 

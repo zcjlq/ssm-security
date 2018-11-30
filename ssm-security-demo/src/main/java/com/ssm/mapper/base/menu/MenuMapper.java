@@ -9,4 +9,6 @@ public interface MenuMapper {
     int insert(Menu record);
 
     List<Menu> getFunctionTreeParent();
+
+    int deleteMenu(Integer[] ids);
 }

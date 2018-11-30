@@ -7,7 +7,7 @@
         <result column="state" jdbcType="VARCHAR" property="state"/>
         <result column="checked" jdbcType="VARCHAR" property="checked"/>
         <result column="attributes" jdbcType="VARCHAR" property="attributes"/>
-        <result column="iconCls" jdbcType="VARCHAR" property="iconcls"/>
+        <result column="iconCls" jdbcType="VARCHAR" property="iconCls"/>
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="is_expand" jdbcType="VARCHAR" property="isExpand"/>
         <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
@@ -21,7 +21,7 @@
         <result column="state" jdbcType="VARCHAR" property="state"/>
         <result column="checked" jdbcType="VARCHAR" property="checked"/>
         <result column="attributes" jdbcType="VARCHAR" property="attributes"/>
-        <result column="iconCls" jdbcType="VARCHAR" property="iconcls"/>
+        <result column="iconCls" jdbcType="VARCHAR" property="iconCls"/>
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="is_expand" jdbcType="VARCHAR" property="isExpand"/>
         <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
@@ -46,9 +46,24 @@
     </select>
 
     <select id="selectByMap" resultMap="BaseResultMapParentName">
-        select t.*, parent.text as parent_name
-        from base_menu t
-                 left join base_menu parent on t.parent_id = parent.id
+        select
+        t.id,t.text,t.state,t.attributes,t.iconCls,t.url,t.is_expand,t.parent_id,t.oper_user,t.create_time,t.last_update,
+        parent.text as parent_name
+        from base_menu t left join base_menu parent on t.parent_id = parent.id
+        where 1 = 1
+        <if test="parentName != null and parentName != ''">
+            and parent.text like '%' #{parentName} '%'
+        </if>
+        <if test="text != null and text != ''">
+            and t.text like '%' #{text} '%'
+        </if>
+        <if test="url != null and url != ''">
+            and t.url like '%' #{url} '%'
+        </if>
+        <if test="operUser != null and operUser != ''">
+            and t.oper_user like '%' #{operUser} '%'
+        </if>
+        order by t.id
     </select>
     <select id="selectByParentId" resultMap="BaseResultMap">
         select
@@ -59,7 +74,10 @@
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from base_menu
-        where id = #{id,jdbcType=INTEGER}
+        where id in
+        <foreach collection="array" item="itemId" open="(" separator="," close=")">
+            #{itemId}
+        </foreach>
     </delete>
     <insert id="insert" parameterType="com.ssm.dto.base.menu.Menu">
         insert into base_menu (id,
@@ -78,7 +96,7 @@
                 #{state,jdbcType=VARCHAR},
                 #{checked,jdbcType=VARCHAR},
                 #{attributes,jdbcType=VARCHAR},
-                #{iconcls,jdbcType=VARCHAR},
+                #{iconCls,jdbcType=VARCHAR},
                 #{url,jdbcType=VARCHAR},
                 #{isExpand,jdbcType=VARCHAR},
                 #{parentId,jdbcType=INTEGER},
@@ -103,7 +121,7 @@
             <if test="attributes != null">
                 attributes,
             </if>
-            <if test="iconcls != null">
+            <if test="iconCls != null">
                 iconCls,
             </if>
             <if test="url != null">
@@ -117,6 +135,9 @@
             </if>
             <if test="operUser != null">
                 oper_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
             </if>
             <if test="lastUpdate != null">
                 last_update,
@@ -138,8 +159,8 @@
             <if test="attributes != null">
                 #{attributes,jdbcType=VARCHAR},
             </if>
-            <if test="iconcls != null">
-                #{iconcls,jdbcType=VARCHAR},
+            <if test="iconCls != null">
+                #{iconCls,jdbcType=VARCHAR},
             </if>
             <if test="url != null">
                 #{url,jdbcType=VARCHAR},
@@ -152,6 +173,9 @@
             </if>
             <if test="operUser != null">
                 #{operUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="lastUpdate != null">
                 #{lastUpdate,jdbcType=TIMESTAMP},
@@ -173,8 +197,8 @@
             <if test="attributes != null">
                 attributes = #{attributes,jdbcType=VARCHAR},
             </if>
-            <if test="iconcls != null">
-                iconCls = #{iconcls,jdbcType=VARCHAR},
+            <if test="iconCls != null">
+                iconCls = #{iconCls,jdbcType=VARCHAR},
             </if>
             <if test="url != null">
                 url = #{url,jdbcType=VARCHAR},
@@ -200,7 +224,7 @@
             state       = #{state,jdbcType=VARCHAR},
             checked     = #{checked,jdbcType=VARCHAR},
             attributes  = #{attributes,jdbcType=VARCHAR},
-            iconCls     = #{iconcls,jdbcType=VARCHAR},
+            iconCls     = #{iconCls,jdbcType=VARCHAR},
             url         = #{url,jdbcType=VARCHAR},
             is_expand   = #{isExpand,jdbcType=VARCHAR},
             parent_id   = #{parentId,jdbcType=INTEGER},

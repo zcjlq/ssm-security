@@ -4,18 +4,21 @@ import com.ssm.dto.base.menu.Menu;
 import com.ssm.dto.base.menu.MenuVo;
 import com.ssm.mapper.base.menu.AuMenuMapper;
 import com.ssm.mapper.base.menu.MenuMapper;
+import com.ssm.service.BaseService;
 import com.ssm.service.base.menu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author 贾令强
  * @since 2018/5/12 14:50
  */
 @Service
-public class MenuServiceImpl implements MenuService {
+public class MenuServiceImpl extends BaseService implements MenuService {
 
     @Autowired
     private MenuMapper menuMapper;
@@ -25,30 +28,21 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> getFunctionTree() {
-        // 获得用户权限
-        List<Menu> functionTreeParent = menuMapper.getFunctionTreeParent();
+        List<Menu> menuList = auMenuMapper.selectAll();
         // 所有一级目录集合
-        List<Menu> functionTrees = new ArrayList<>();
-        for (Menu functionTree : functionTreeParent) {
+        List<Menu> newMenuList = new ArrayList<>();
+        for (Menu menu : menuList) {
             //父ID是0 说明是一级目录
-            if (functionTree.getParentId() == 0) {
-                Menu parent = new Menu();
-                parent.setId(functionTree.getId());
-                parent.setState("open");
-                parent.setText(functionTree.getText());
-                parent.setIconcls("icon-man");
-                Map<String, String> attrMap = new HashMap<>();
-                attrMap.put("url", functionTree.getUrl());
-//                parent.setAttributes(attrMap);
-                List<Menu> childList = getChildren(functionTree, functionTreeParent);
-                //如果一级目录子目录不为空才展示出来
+            if (menu.getParentId() == 0) {
+                List<Menu> childList = this.getChildren(menu, menuList);
+                //如果一级目录子目录不为空
                 if (childList != null && childList.size() > 0) {
-                    parent.setChildren(childList);
-                    functionTrees.add(parent);
+                    menu.setChildren(childList);
                 }
+                newMenuList.add(menu);
             }
         }
-        return functionTreeParent;
+        return newMenuList;
     }
 
     @Override
@@ -59,8 +53,16 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuVo> getMenus() {
-        return auMenuMapper.selectByMap();
+    public List<MenuVo> getMenus(String parentModule, Menu menu) {
+        String text = menu.getText();
+        String url = menu.getUrl();
+        String operUser = menu.getOperUser();
+        if (log.isInfoEnabled()) {
+            log.info("查询菜单，参数:父菜单名称[{}],菜单名称[{}],url[{}],操作用户[{}]",
+                    parentModule, text, url, operUser);
+        }
+        List<MenuVo> menuVos = auMenuMapper.selectByMap(parentModule, text, url, operUser);
+        return menuVos;
     }
 
     @Override
@@ -75,41 +77,52 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Boolean saveMenu(Menu menu) {
+    public int saveMenu(Menu menu, String userName) {
+        if (log.isInfoEnabled()) {
+            log.info("新增菜单参数:{}", menu);
+        }
         menu.setCreateTime(new Date());
         menu.setLastUpdate(new Date());
-        return auMenuMapper.insertSelective(menu) > 0;
+        int i = auMenuMapper.insertSelective(menu);
+        if (log.isInfoEnabled()) {
+            log.info("新增菜单结果");
+        }
+        return i;
+    }
+
+    @Override
+    public int deleteMenu(Integer[] ids, String userName) {
+        int i = auMenuMapper.deleteByPrimaryKey(ids);
+        if (log.isInfoEnabled()) {
+            log.info("删除菜单数量[{}]", i);
+        }
+        return i;
+    }
+
+    @Override
+    public int updateMenu(Menu menu, String userName) {
+        menu.setLastUpdate(new Date());
+//        menu.setOperUser(userName);
+        return auMenuMapper.updateByPrimaryKey(menu);
     }
 
     /**
      * 根据当前目录，递归找到其所有子节点
      *
      * @param p
-     * @param functionTreeParent
+     * @param menuList
      * @return
      * @date
      * @author
      */
-    private List<Menu> getChildren(Menu p, List<Menu> functionTreeParent) {
-        List<Menu> mList = new ArrayList<>();
-        // 在权限集合中找到,当前权限菜单的子节点
-        for (Menu parent : functionTreeParent) {
-            // 如果某个菜单的父ID为当前菜单ID，那么就把它作为当前菜单的child
-            if ((parent.getParentId() + 1) == (p.getId() + 1)) {
-                //封装菜单对象
-                Menu tm = new Menu();
-                tm.setId(parent.getId());
-                tm.setState("open");
-                tm.setText(parent.getText());
-                tm.setIconcls("icon-lock");
-                Map<String, String> attrMap = new HashMap<>();
-                attrMap.put("url", parent.getUrl());
-//                tm.setAttributes(attrMap);
-                tm.setChildren(getChildren(parent, functionTreeParent));
-                mList.add(tm);
+    private List<Menu> getChildren(Menu parentMenu, List<Menu> allMenus) {
+        List<Menu> childrenMenus = new ArrayList<>();
+        allMenus.forEach(menu -> {
+            if (menu.getParentId().equals(parentMenu.getId())) {
+                childrenMenus.add(menu);
             }
-        }
-        return mList;
+        });
+        return childrenMenus;
     }
 }
 

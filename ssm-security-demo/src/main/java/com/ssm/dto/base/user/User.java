@@ -2,10 +2,10 @@ package com.ssm.dto.base.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ssm.validate.MyConstraint;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.util.Collection;

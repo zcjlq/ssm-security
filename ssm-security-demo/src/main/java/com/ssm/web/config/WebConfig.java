@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2018/6/18 14:37
  */
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     private TimeInterceptor timeInterceptor;
@@ -36,7 +36,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean timeFilter2() {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        FilterRegistrationBean<TimeFilter2> filterRegistrationBean = new FilterRegistrationBean<>();
         TimeFilter2 timeFilter2 = new TimeFilter2();
         filterRegistrationBean.setFilter(timeFilter2);
 

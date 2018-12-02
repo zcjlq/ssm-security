@@ -23,7 +23,6 @@ function initTree() {
             }
         },
         onLoad: function (panel) {
-            debugger
             console.log(panel)
         }
     })
@@ -35,7 +34,7 @@ function openTab(text, url, id) {
         $('#tabs').tabs("select", text)
     } else {
         var content = "<iframe frameborder='0' scrolling = 'auto' " +
-            "style='width:100%;height:100%' src='" + url + "'></iframe>";
+            "style='width:100%;height:100%' src='" + 'views/' + url + "'></iframe>";
         $("#tabs").tabs('add', {
             title: text,
             closable: true,

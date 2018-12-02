@@ -1,5 +1,6 @@
 package com.ssm.security.core.social;
 
+import org.springframework.social.UserIdSource;
 import org.springframework.social.security.SocialAuthenticationFilter;
 import org.springframework.social.security.SpringSocialConfigurer;
 
@@ -16,7 +17,7 @@ public class MySpringSocialConfigurer extends SpringSocialConfigurer {
     }
 
     /**
-     * 为了
+     *
      *
      * @param object
      * @param <T>
@@ -27,5 +28,11 @@ public class MySpringSocialConfigurer extends SpringSocialConfigurer {
         SocialAuthenticationFilter socialAuthenticationFilter = (SocialAuthenticationFilter) super.postProcess(object);
         socialAuthenticationFilter.setFilterProcessesUrl(filterProcessUrl);
         return (T) socialAuthenticationFilter;
+    }
+
+    @Override
+    public SpringSocialConfigurer userIdSource(UserIdSource userIdSource) {
+        System.out.println("");
+        return super.userIdSource(userIdSource);
     }
 }

@@ -1,6 +1,9 @@
 ssm_page_size = 100;
-ssm_page_list = [100, 500, 1000];
+ssm_page_list = [20, 50, 100, 500, 1000];
 
+// 重写combobox 默认值
+$.fn.combobox.defaults.prompt = '--请选择--';
+// $.fn.combobox.defaults.editable = true;
 
 // 格式化时间
 Date.prototype.format = function (format) {
@@ -60,4 +63,29 @@ function msg(data) {
         msg: data,
         showType: 'info'
     });
+}
+
+function loading_process() {
+    $.messager.progress({
+        title: '提示',
+        msg: '数据加载中，请稍候……',
+        text: ''
+    });
+}
+
+function loading_success() {
+    $.messager.progress('close');
+}
+
+function reset(formId, datagridId) {
+    $("#" + formId).form('clear');
+    const dg_menu = $('#' + datagridId);
+    dg_menu.datagrid('loadData', {
+        url: '',
+        total: 0,
+        rows: []
+    });
+    const dg = dg_menu.datagrid('options');
+    dg.sortName = '';
+    dg.sortOrder = '';
 }

@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="../../plugin/easyui/themes/black/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../plugin/easyui/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../plugin/easyui/themes/icon.css">
     <script type="text/javascript" src="../../plugin/easyui/jquery.min.js"></script>
     <script type="text/javascript" src="../../plugin/easyui/jquery.easyui.min.js"></script>
@@ -24,7 +24,7 @@
                 <table style="margin: 0 auto">
                     <tr>
                         <td><label for="parentModule">父节点菜单：</label><input id="parentModule" name="parentModule"
-                                                                           class="easyui-textbox"/>
+                                                                           class="easyui-combobox"/>
                         </td>
                         <td><label for="text">菜单名称：</label><input id="text" name="text" class="easyui-textbox"/></td>
                         <td><label for="url">url：</label><input id="url" name="url" class="easyui-textbox"/></td>
@@ -46,6 +46,9 @@
     </div>
 </div>
 <div data-options="region:'center',border:false">
+    <table id="dg_menu" class="easyui-datagrid"></table>
+</div>
+<div data-options="region:'south',border:false" align="right">
     <div id="toolbar">
         <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'"
            onclick="addMenu()">新增</a>
@@ -54,7 +57,6 @@
         <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"
            onclick="deleteMenu()">删除</a>
     </div>
-    <table id="dg_menu" class="easyui-datagrid"></table>
 </div>
 <!--新增对话框-->
 <div id="addMenuDialog" class="easyui-dialog" data-options="closed:true">
@@ -66,7 +68,7 @@
             </tr>
             <tr>
                 <td>父菜单名称</td>
-                <td><input id="add_parentMenuId" name="parentId" class="easyui-combobox"></td>
+                <td><input id="add_parentMenuId" name="parentId" class="easyui-combobox" required></td>
             </tr>
             <tr>
                 <td>图标</td>
@@ -94,7 +96,7 @@
             </tr>
             <tr>
                 <td>父菜单名称</td>
-                <td><input id="update_parentMenuId" name="parentId" class="easyui-combobox"></td>
+                <td><input id="update_parentMenuId" name="parentId" class="easyui-combobox" required></td>
             </tr>
             <tr>
                 <td>图标</td>

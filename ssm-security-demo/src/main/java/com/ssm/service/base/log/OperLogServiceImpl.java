@@ -1,8 +1,7 @@
-package com.ssm.service.base.impl.log;
+package com.ssm.service.base.log;
 
 import com.ssm.dto.base.log.OperLog;
 import com.ssm.mapper.base.log.OperLogMapper;
-import com.ssm.service.base.log.OperLogService;
 import com.ssm.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

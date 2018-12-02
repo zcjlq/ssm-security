@@ -1,67 +1,51 @@
 $(function () {
+    loading_process();
+    initParentMenuCombobox('parentModule');
     initDataGrid();
+    loading_success();
 });
 
 
 // 初始化datagrid
 function initDataGrid() {
-    $("#menuState").combobox({
-        valueField: "value",
-        textField: "label",
-        data: [{
-            label: "全部",
-            value: ""
-        }, {
-            label: "开启",
-            value: "open"
-        }, {
-            label: "关闭",
-            value: "closed"
-        }],
-        value: ""
-    });
-
     $('#dg_menu').datagrid({
         //url: '/log',
         method: 'get',
         fit: true,
-        fitColumns: true,
+        //fitColumns: true,
+        border: false,
         collapsible: true,
         rownumbers: true,
         pagination: true,
         striped: true,
+        multiSort: true,
         pageSize: ssm_page_size,
         pageList: ssm_page_list,
         columns: [[
             {field: 'ck', checkbox: true, checked: false},
-            {field: 'id', title: '序号', width: '5%'},
             {field: 'parentId', hidden: true},
-            {field: 'parentName', title: '父节点菜单', width: '10%', sortable: true},
+            {field: 'parentName', title: '父节点菜单', width: '10%'},
+            {field: 'id', title: '序号', width: '5%'},
             {field: 'text', title: '菜单名称', width: '10%', sortable: true},
             {field: 'url', title: 'url', width: '15%', sortable: true},
-            {field: 'iconCls', title: '图标', width: '7%', sortable: true},
-            {field: 'state', title: '节点状态', width: '6%', sortable: true},
-            {field: 'checked', title: '选中状态', width: '6%', sortable: true},
-            {field: 'isExpand', title: '打开状态', width: '6%', sortable: true},
-            {field: 'attributes', title: '属性', width: '7%', sortable: true},
-            {field: 'operUser', title: '操作用户', width: '7%', sortable: true},
+            {field: 'iconCls', title: '图标', width: '7%'},
+            {field: 'state', title: '节点状态', width: '6%'},
+            {field: 'checked', title: '选中状态', width: '6%'},
+            {field: 'isExpand', title: '打开状态', width: '6%'},
+            // {field: 'attributes', title: '属性', width: '7%', sortable: true},
+            {field: 'createUser', title: '创建用户', width: '7%', sortable: true},
             {
                 field: 'createTime', title: '创建时间', width: '10%', sortable: true, formatter: function (value, row) {
                     return formatDatebox(value);
                 }
             },
+            {field: 'operUser', title: '操作用户', width: '7%', sortable: true},
             {
                 field: 'lastUpdate', title: '更新时间', width: '10%', sortable: true, formatter: function (value, row) {
                     return formatDatebox(value);
                 }
             }
-        ]],
-        onSelect: function (index, row) {
-
-        },
-        onLoadSuccess: function (data) {
-            //$(this).datagrid('tooltip');
-        }
+        ]]
     });
 }
 
@@ -69,19 +53,32 @@ function initDataGrid() {
  * 查询
  */
 function searchMenu() {
+    loading_process();
     var form = $("#search_form").serializeJSON();
     $('#dg_menu').datagrid({
         url: "/menu/list",
         queryParams: {
-            parentModule: form.parentModule,
+            parentModuleId: form.parentModule,
             text: form.text,
             url: form.url,
             operUser: form.operUser
         },
         onLoadSuccess: function (data) {
-            //$(this).datagrid('tooltip');
-            $('#dg_menu').datagrid('clearChecked');
-            var a = $('#dg_menu').datagrid('getSelections');
+            var mark = 1;                                    //这里涉及到简单的运算，mark是计算每次需要合并的格子数
+            for (var i = 1; i < data.rows.length; i++) {     //这里循环表格当前的数据
+                if (data.rows[i]['parentId'] !== 0
+                    && data.rows[i]['parentId'] === data.rows[i - 1]['parentId']) {   //后一行的值与前一行的值做比较，相同就需要合并
+                    mark += 1;
+                    $(this).datagrid('mergeCells', {
+                        index: i + 1 - mark,   //datagrid的index，表示从第几行开始合并；紫色的内容需是最精髓的，就是记住最开始需要合并的位置
+                        field: 'parentName',   //合并单元格的区域，就是clomun中的filed对应的列
+                        rowspan: mark          //纵向合并的格数，如果想要横向合并，就使用colspan：mark
+                    });
+                } else {
+                    mark = 1;                  //一旦前后两行的值不一样了，那么需要合并的格子数mark就需要重新计算
+                }
+            }
+            loading_success();
         }
     });
 }
@@ -90,11 +87,7 @@ function searchMenu() {
  * 重置查询条件
  */
 function resetMenu() {
-    $("#search_form").form('clear');
-    $('#dg_menu').datagrid('loadData', {
-        rows: [],
-        url: ''
-    });
+    reset('search_form', 'dg_menu')
 }
 
 /**
@@ -159,7 +152,6 @@ function updateMenu() {
     if (!row) {
         return;
     }
-    debugger
     var updateMenuForm = $('#updateMenuForm');
     var updateMenuDialog = $('#updateMenuDialog');
     updateMenuDialog.dialog({
@@ -242,16 +234,8 @@ function initParentMenuCombobox(id) {
         valueField: 'id',
         textField: 'text',
         limitToList: true,
-        value: '0',
-        onChange: function () {
-            // 如果新增菜单为一级菜单，
-            var parentText = $(this).combobox('getText');
-            debugger
-            if (parentText === '一级菜单') {
-                $("#add_url").textbox({'readonly': true});
-            } else {
-                $("#add_url").textbox({'readonly': false});
-            }
+        onLoadSuccess: function (data) {
+            $("#search_form").form('clear');
         }
     })
 }
@@ -265,7 +249,7 @@ function initStateCombobox(id) {
             {id: 'open', text: 'open'},
             {id: 'closed', text: 'closed'}
         ],
-        value: 'open'
+        value: ''
     })
 }
 

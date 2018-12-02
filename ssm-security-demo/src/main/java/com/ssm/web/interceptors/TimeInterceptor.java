@@ -32,11 +32,13 @@ public class TimeInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("...TimeInterceptor preHandle");
-
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        log.info("要访问的Controller为：" + handlerMethod.getBean().getClass().getName() + "，方法为：" + handlerMethod.getMethod().getName());
-        request.setAttribute("startTime", System.currentTimeMillis());
+        if (handler instanceof HandlerMethod) {
+            log.info("...TimeInterceptor preHandle");
+            System.out.println("------------------------------");
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            log.info("要访问的Controller为：" + handlerMethod.getBean().getClass().getName() + "，方法为：" + handlerMethod.getMethod().getName());
+            request.setAttribute("startTime", System.currentTimeMillis());
+        }
         return true;
     }
 
@@ -51,10 +53,12 @@ public class TimeInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        log.info("...TimeInterceptor postHandle");
+        if (handler instanceof HandlerMethod) {
+            log.info("...TimeInterceptor postHandle");
 
-        Long startTime = (Long) request.getAttribute("startTime");
-        log.info("...TimeInterceptor postHandle耗时：" + (System.currentTimeMillis() - startTime));
+            Long startTime = (Long) request.getAttribute("startTime");
+            log.info("...TimeInterceptor postHandle耗时：" + (System.currentTimeMillis() - startTime));
+        }
     }
 
     /**
@@ -68,10 +72,12 @@ public class TimeInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("...TimeInterceptor afterCompletion");
+        if (handler instanceof HandlerMethod) {
+            log.info("...TimeInterceptor afterCompletion");
 
-        Long startTime = (Long) request.getAttribute("startTime");
-        log.info("...TimeInterceptor afterCompletion 耗时：" + (System.currentTimeMillis() - startTime));
-        log.info("ex:" + ex);
+            Long startTime = (Long) request.getAttribute("startTime");
+            log.info("...TimeInterceptor afterCompletion 耗时：" + (System.currentTimeMillis() - startTime));
+            log.info("ex:" + ex);
+        }
     }
 }

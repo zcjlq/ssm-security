@@ -11,6 +11,8 @@
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="is_expand" jdbcType="VARCHAR" property="isExpand"/>
         <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="oper_user" jdbcType="VARCHAR" property="operUser"/>
         <result column="last_update" jdbcType="TIMESTAMP" property="lastUpdate"/>
     </resultMap>
@@ -25,11 +27,24 @@
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="is_expand" jdbcType="VARCHAR" property="isExpand"/>
         <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="oper_user" jdbcType="VARCHAR" property="operUser"/>
         <result column="last_update" jdbcType="TIMESTAMP" property="lastUpdate"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, text, state, checked, attributes, iconCls, url, is_expand, parent_id, oper_user,
+        id,
+        text,
+        state,
+        checked,
+        attributes,
+        iconCls,
+        url,
+        is_expand,
+        parent_id,
+        create_user,
+        create_time,
+        oper_user,
         last_update
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -47,23 +62,28 @@
 
     <select id="selectByMap" resultMap="BaseResultMapParentName">
         select
-        t.id,t.text,t.state,t.attributes,t.iconCls,t.url,t.is_expand,t.parent_id,t.oper_user,t.create_time,t.last_update,
-        parent.text as parent_name
+        t.id,t.text,t.state,t.attributes,t.iconCls,t.url,t.is_expand,t.parent_id,
+        t.create_user,t.create_time,t.oper_user,t.last_update,parent.text as parent_name
         from base_menu t left join base_menu parent on t.parent_id = parent.id
         where 1 = 1
-        <if test="parentName != null and parentName != ''">
-            and parent.text like '%' #{parentName} '%'
+        <if test="parentModuleId != null and parentModuleId != ''">
+            and t.parent_id = #{parentModuleId,jdbcType=INTEGER}
         </if>
-        <if test="text != null and text != ''">
-            and t.text like '%' #{text} '%'
+        <if test="menu.text != null and menu.text != ''">
+            and t.text like '%' #{menu.text,jdbcType=VARCHAR} '%'
         </if>
-        <if test="url != null and url != ''">
-            and t.url like '%' #{url} '%'
+        <if test="menu.url != null and menu.url != ''">
+            and t.url like '%' #{menu.url,jdbcType=VARCHAR} '%'
         </if>
-        <if test="operUser != null and operUser != ''">
-            and t.oper_user like '%' #{operUser} '%'
+        <if test="menu.operUser != null and menu.operUser != ''">
+            and t.oper_user like '%' #{menu.operUser,jdbcType=VARCHAR} '%'
         </if>
-        order by t.id
+        <if test="menu.sort == null or menu.sort == ''">
+            order by t.parent_id,t.id
+        </if>
+        <if test="menu.sort != null and menu.sort != ''">
+            ${menu.sort}
+        </if>
     </select>
     <select id="selectByParentId" resultMap="BaseResultMap">
         select
@@ -89,6 +109,8 @@
                                url,
                                is_expand,
                                parent_id,
+                               create_user,
+                               create_time,
                                oper_user,
                                last_update)
         values (#{id,jdbcType=INTEGER},
@@ -100,6 +122,8 @@
                 #{url,jdbcType=VARCHAR},
                 #{isExpand,jdbcType=VARCHAR},
                 #{parentId,jdbcType=INTEGER},
+                #{createUser,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP}
                 #{operUser,jdbcType=VARCHAR},
                 #{lastUpdate,jdbcType=TIMESTAMP})
     </insert>
@@ -133,11 +157,14 @@
             <if test="parentId != null">
                 parent_id,
             </if>
-            <if test="operUser != null">
-                oper_user,
+            <if test="createUser != null">
+                create_user,
             </if>
             <if test="createTime != null">
                 create_time,
+            </if>
+            <if test="operUser != null">
+                oper_user,
             </if>
             <if test="lastUpdate != null">
                 last_update,
@@ -171,11 +198,14 @@
             <if test="parentId != null">
                 #{parentId,jdbcType=INTEGER},
             </if>
-            <if test="operUser != null">
-                #{operUser,jdbcType=VARCHAR},
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operUser != null">
+                #{operUser,jdbcType=VARCHAR},
             </if>
             <if test="lastUpdate != null">
                 #{lastUpdate,jdbcType=TIMESTAMP},
@@ -209,6 +239,12 @@
             <if test="parentId != null">
                 parent_id = #{parentId,jdbcType=INTEGER},
             </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="operUser != null">
                 oper_user = #{operUser,jdbcType=VARCHAR},
             </if>
@@ -228,6 +264,8 @@
             url         = #{url,jdbcType=VARCHAR},
             is_expand   = #{isExpand,jdbcType=VARCHAR},
             parent_id   = #{parentId,jdbcType=INTEGER},
+            create_user = #{createUser,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
             oper_user   = #{operUser,jdbcType=VARCHAR},
             last_update = #{lastUpdate,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}

@@ -1,8 +1,7 @@
-package com.ssm.service.base.impl.user;
+package com.ssm.service.base.user;
 
 import com.ssm.dto.base.user.User;
 import com.ssm.mapper.base.user.UserMapper;
-import com.ssm.service.base.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

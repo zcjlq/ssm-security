@@ -1,11 +1,12 @@
 package com.ssm.dto.base.menu;
 
+import com.ssm.util.BaseBean;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-public class Menu implements Serializable {
+public class Menu extends BaseBean implements Serializable {
 
     private static final long serialVersionUID = -8714013643214148148L;
 
@@ -35,9 +36,11 @@ public class Menu implements Serializable {
     // 父节点id
     private Integer parentId;
 
-    private String operUser;
+    private String createUser;
 
     private Date createTime;
+
+    private String operUser;
 
     private Date lastUpdate;
 
@@ -115,6 +118,14 @@ public class Menu implements Serializable {
         this.parentId = parentId;
     }
 
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
     public String getOperUser() {
         return operUser;
     }
@@ -148,31 +159,6 @@ public class Menu implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Menu)) return false;
-        Menu menu = (Menu) o;
-        return Objects.equals(getId(), menu.getId()) &&
-                Objects.equals(getText(), menu.getText()) &&
-                Objects.equals(getState(), menu.getState()) &&
-                Objects.equals(getChecked(), menu.getChecked()) &&
-                Objects.equals(getAttributes(), menu.getAttributes()) &&
-                Objects.equals(getIconCls(), menu.getIconCls()) &&
-                Objects.equals(getUrl(), menu.getUrl()) &&
-                Objects.equals(getIsExpand(), menu.getIsExpand()) &&
-                Objects.equals(getParentId(), menu.getParentId()) &&
-                Objects.equals(getOperUser(), menu.getOperUser()) &&
-                Objects.equals(getCreateTime(), menu.getCreateTime()) &&
-                Objects.equals(getLastUpdate(), menu.getLastUpdate()) &&
-                Objects.equals(getChildren(), menu.getChildren());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getText(), getState(), getChecked(), getAttributes(), getIconCls(), getUrl(), getIsExpand(), getParentId(), getOperUser(), getCreateTime(), getLastUpdate(), getChildren());
-    }
-
-    @Override
     public String toString() {
         return "Menu{" +
                 "id=" + id +
@@ -184,8 +170,9 @@ public class Menu implements Serializable {
                 ", url='" + url + '\'' +
                 ", isExpand='" + isExpand + '\'' +
                 ", parentId=" + parentId +
-                ", operUser='" + operUser + '\'' +
+                ", createUser='" + createUser + '\'' +
                 ", createTime=" + createTime +
+                ", operUser='" + operUser + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 ", children=" + children +
                 '}';

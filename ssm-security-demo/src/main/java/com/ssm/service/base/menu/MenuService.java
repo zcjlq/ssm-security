@@ -13,9 +13,7 @@ public interface MenuService {
 
     List<Menu> getFunctionTree();
 
-    List<Menu> getFunctionTree1();
-
-    List<MenuVo> getMenus(String parentModule, Menu menu);
+    List<MenuVo> getMenus(String parentModuleId, Menu menu);
 
     List<Menu> getParents();
 

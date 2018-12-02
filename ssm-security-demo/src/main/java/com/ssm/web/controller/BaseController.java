@@ -25,17 +25,19 @@ public class BaseController {
     private OperLogMapper operLogMapper;
 
     protected User getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        log.info(principal.toString());
+
         return null;
     }
 
     protected String getUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        log.info(principal.toString());
-        return null;
+        if (principal != null) {
+            log.info(principal.toString());
+            org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User) principal;
+            return springUser.getUsername();
+        }
+        return "";
     }
 
     protected String validatorErrors2String(List<ObjectError> allErrors) {
@@ -51,10 +53,13 @@ public class BaseController {
         operLog.setOperType(operType);
 //        operLog.setController();
 //        operLog.setMethod();
-//        operLog.setOperUser();
+        operLog.setOperUser(this.getUserName());
 //        operLog.setIp();
+        operLog.setStartTime(new Date());
         operLog.setEndTime(new Date());
         operLog.setRemark(remark);
+        operLog.setLogType("2");
+        operLog.setOperUser(this.getUserName());
         operLog.setUseTime((System.currentTimeMillis() - start) / 1000.00 + "秒");
         operLogMapper.insertSelective(operLog);
     }

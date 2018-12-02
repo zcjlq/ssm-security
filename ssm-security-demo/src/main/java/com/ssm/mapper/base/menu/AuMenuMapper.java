@@ -23,10 +23,8 @@ public interface AuMenuMapper {
 
     List<Menu> selectAll();
 
-    List<MenuVo> selectByMap(@Param("parentName") String parentModule,
-                             @Param("text") String text,
-                             @Param("url") String url,
-                             @Param("operUser") String operUser);
+    List<MenuVo> selectByMap(@Param("parentModuleId") String parentModuleId,
+                             @Param("menu") Menu menu);
 
     List<Menu> selectByParentId(int parentId);
 

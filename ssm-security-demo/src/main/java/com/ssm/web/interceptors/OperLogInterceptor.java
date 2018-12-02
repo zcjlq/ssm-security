@@ -45,7 +45,9 @@ public class OperLogInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        request.setAttribute("startTime", System.currentTimeMillis());
+        if (handler instanceof HandlerMethod) {
+            request.setAttribute("startTime", System.currentTimeMillis());
+        }
         return true;
     }
 
@@ -60,8 +62,10 @@ public class OperLogInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        Long startTime = (Long) request.getAttribute("startTime");
-        log.info("...TimeInterceptor postHandle耗时：" + (System.currentTimeMillis() - startTime));
+        if (handler instanceof HandlerMethod) {
+            Long startTime = (Long) request.getAttribute("startTime");
+            log.info("...TimeInterceptor postHandle耗时：" + (System.currentTimeMillis() - startTime));
+        }
     }
 
     /**
@@ -75,20 +79,20 @@ public class OperLogInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        Long startTime = (Long) request.getAttribute("startTime");
-        String userName = this.getUserName();
-
-        OperLog operLog = new OperLog();
-        operLog.setOperUser(userName);
-//        operLog.setOperUserTid();
-        operLog.setLogType("1");
-        operLog.setStartTime(new Date(startTime));
-        operLog.setEndTime(new Date(System.currentTimeMillis()));
-        double useTime = (System.currentTimeMillis() - startTime) / 1000.00;
-        operLog.setUseTime(useTime + "秒");
-        operLog.setIp(this.getIp());
-
         if (handler instanceof HandlerMethod) {
+            Long startTime = (Long) request.getAttribute("startTime");
+            String userName = this.getUserName();
+
+            OperLog operLog = new OperLog();
+            operLog.setOperUser(userName);
+//        operLog.setOperUserTid();
+            operLog.setLogType("1");
+            operLog.setStartTime(new Date(startTime));
+            operLog.setEndTime(new Date(System.currentTimeMillis()));
+            double useTime = (System.currentTimeMillis() - startTime) / 1000.00;
+            operLog.setUseTime(useTime + "秒");
+            operLog.setIp(this.getIp());
+
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             operLog.setController(handlerMethod.getBean().getClass().getSimpleName());
             operLog.setMethod(handlerMethod.getMethod().getName());
@@ -99,8 +103,6 @@ public class OperLogInterceptor implements HandlerInterceptor {
             } else {
                 log.info("操作日志拦截器，记录日志失败");
             }
-        } else {
-            log.info("没有访问Controller");
         }
     }
 

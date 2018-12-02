@@ -1,11 +1,11 @@
-package com.ssm.service.base.impl.menu;
+package com.ssm.service.base.menu;
 
+import com.github.pagehelper.PageHelper;
 import com.ssm.dto.base.menu.Menu;
 import com.ssm.dto.base.menu.MenuVo;
 import com.ssm.mapper.base.menu.AuMenuMapper;
-import com.ssm.mapper.base.menu.MenuMapper;
 import com.ssm.service.BaseService;
-import com.ssm.service.base.menu.MenuService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,6 @@ import java.util.List;
  */
 @Service
 public class MenuServiceImpl extends BaseService implements MenuService {
-
-    @Autowired
-    private MenuMapper menuMapper;
 
     @Autowired
     private AuMenuMapper auMenuMapper;
@@ -46,33 +43,55 @@ public class MenuServiceImpl extends BaseService implements MenuService {
     }
 
     @Override
-    public List<Menu> getFunctionTree1() {
-        // todo 根据权限获取树
-        List<Menu> auFunctionTrees = auMenuMapper.selectAll();
-        return auFunctionTrees;
-    }
-
-    @Override
-    public List<MenuVo> getMenus(String parentModule, Menu menu) {
+    public List<MenuVo> getMenus(String parentModuleId, Menu menu) {
+        log.info("查询菜单列表，参数为：parentModuleId[{}],菜单实体：{}", parentModuleId, menu.toString());
         String text = menu.getText();
         String url = menu.getUrl();
         String operUser = menu.getOperUser();
-        if (log.isInfoEnabled()) {
-            log.info("查询菜单，参数:父菜单名称[{}],菜单名称[{}],url[{}],操作用户[{}]",
-                    parentModule, text, url, operUser);
+        String sort = menu.getSort();
+        if (StringUtils.isNotBlank(sort)) {
+            String[] sorts = sort.split(",");
+            String order = menu.getOrder();
+            String[] orders = order.split(",");
+            StringBuilder sq = new StringBuilder("order by parent.id,t.");
+            for (int i = 0; i < sorts.length; i++) {
+                String sortColumn = sorts[i];
+                switch (sortColumn) {
+                    case "createUser":
+                        sortColumn = "create_user";
+                        break;
+                    case "createTime":
+                        sortColumn = "create_time";
+                        break;
+                    case "operUser":
+                        sortColumn = "oper_user";
+                        break;
+                    case "lastUpdate":
+                        sortColumn = "last_update";
+                        break;
+                    default:
+                }
+                sq.append(sortColumn).append(" ").append(orders[i]).append(",");
+            }
+            sq.deleteCharAt(sq.length() - 1);
+            menu.setSort(sq.toString());
         }
-        List<MenuVo> menuVos = auMenuMapper.selectByMap(parentModule, text, url, operUser);
+        // text, url, operUser
+        PageHelper.startPage(menu.getPage(), menu.getRows());
+        List<MenuVo> menuVos = auMenuMapper.selectByMap(parentModuleId, menu);
+        log.info("查询到菜单数量为：[{}]", menuVos.size());
         return menuVos;
     }
 
     @Override
     public List<Menu> getParents() {
-
+        log.info("获取有效状态一级菜单");
         List<Menu> menus = auMenuMapper.selectByParentId(0);
         Menu menu = new Menu();
-        menu.setId(0);
         menu.setText("一级菜单");
+        menu.setId(0);
         menus.add(0, menu);
+        log.info("获取有效状态一级菜单,数量为：[{}]", menus.size());
         return menus;
     }
 
@@ -81,11 +100,13 @@ public class MenuServiceImpl extends BaseService implements MenuService {
         if (log.isInfoEnabled()) {
             log.info("新增菜单参数:{}", menu);
         }
+        menu.setOperUser(userName);
+        menu.setCreateUser(userName);
         menu.setCreateTime(new Date());
         menu.setLastUpdate(new Date());
         int i = auMenuMapper.insertSelective(menu);
         if (log.isInfoEnabled()) {
-            log.info("新增菜单结果");
+            log.info("新增菜单结果,影响行数[{}]", i);
         }
         return i;
     }
@@ -102,15 +123,14 @@ public class MenuServiceImpl extends BaseService implements MenuService {
     @Override
     public int updateMenu(Menu menu, String userName) {
         menu.setLastUpdate(new Date());
+        menu.setOperUser(userName);
 //        menu.setOperUser(userName);
-        return auMenuMapper.updateByPrimaryKey(menu);
+        return auMenuMapper.updateByPrimaryKeySelective(menu);
     }
 
     /**
      * 根据当前目录，递归找到其所有子节点
      *
-     * @param p
-     * @param menuList
      * @return
      * @date
      * @author

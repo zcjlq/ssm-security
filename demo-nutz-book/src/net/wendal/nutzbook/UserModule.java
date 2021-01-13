@@ -1,4 +1,4 @@
-package net.wendal.nutzbook.module;
+package net.wendal.nutzbook;
 
 import net.wendal.nutzbook.bean.User;
 import org.nutz.dao.Cnd;
